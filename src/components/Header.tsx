@@ -80,6 +80,23 @@ export default function Header() {
     };
   }, [megaOpen]);
 
+  /*
+    Chiude la tendina e garantisce che la pagina nuova parta dall'alto.
+
+    Next porta già in cima quando cambia rotta, ma con la tendina aperta al
+    momento del click si sono visti atterraggi a metà pagina: il pannello
+    traboccava (vedi sotto) e alterava la geometria del documento proprio
+    mentre la navigazione partiva. Corretto il traboccamento la causa
+    dovrebbe essere sparita; questa riga costa nulla e toglie il dubbio.
+
+    `requestAnimationFrame` serve a rimandare lo scroll al disegno
+    successivo: farlo subito significherebbe agire sulla pagina vecchia.
+  */
+  const chiudiTendina = () => {
+    setMegaOpen(false);
+    requestAnimationFrame(() => window.scrollTo({ top: 0 }));
+  };
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
@@ -176,17 +193,40 @@ export default function Header() {
         id="mega-servizi"
         ref={megaRef}
         inert={!megaOpen}
-        className={`hidden border-t border-line bg-surface/95 backdrop-blur-xl transition-[max-height,opacity] duration-300 lg:block ${
-          megaOpen ? "max-h-[36rem] opacity-100" : "max-h-0 overflow-hidden opacity-0"
+        /*
+          `overflow-hidden` va SEMPRE, non solo da chiuso.
+
+          Prima stava solo nello stato chiuso, e da aperto il pannello aveva
+          `overflow: visible`: il contenuto più alto di `max-h` non veniva
+          ritagliato ma traboccava sopra la pagina — ultime categorie
+          sospese sul contenuto della home, senza sfondo dietro.
+
+          Ora il pannello ritaglia sempre, e da aperto si limita all'altezza
+          della finestra meno l'header: se le voci non ci stanno, scorre
+          dentro invece di uscire. `calc(100vh-5rem)` regge anche su portatili
+          bassi, dove 36rem fissi sfondavano.
+        */
+        className={`hidden overflow-hidden border-t border-line bg-surface/95 backdrop-blur-xl transition-[max-height,opacity] duration-300 lg:block ${
+          megaOpen
+            ? "max-h-[calc(100vh-5rem)] overflow-y-auto opacity-100"
+            : "max-h-0 opacity-0"
         }`}
       >
         <div className="shell py-8">
-          <div className="grid grid-cols-3 gap-x-8 gap-y-7">
+          {/*
+            `columns-3` invece di `grid-cols-3`: sono colonne di testo, che
+            distribuiscono i blocchi bilanciandone l'altezza. Con la griglia
+            ogni riga era alta quanto la categoria più lunga — e la prima ne
+            ha undici — perciò restavano enormi buchi accanto a "Personale",
+            che di voci ne ha una. `break-inside-avoid` impedisce che una
+            categoria venga spezzata a metà tra due colonne.
+          */}
+          <div className="columns-3 gap-8">
             {serviceCategories.map((categoria) => (
-              <div key={categoria.slug}>
+              <div key={categoria.slug} className="mb-7 break-inside-avoid">
                 <Link
                   href={`/servizi#${categoria.slug}`}
-                  onClick={() => setMegaOpen(false)}
+                  onClick={chiudiTendina}
                   className="eyebrow mb-3 block text-accent-soft transition-colors hover:text-fg"
                 >
                   {categoria.nome}
@@ -196,7 +236,7 @@ export default function Header() {
                     <li key={servizio.slug}>
                       <Link
                         href={linkServizio(servizio)}
-                        onClick={() => setMegaOpen(false)}
+                        onClick={chiudiTendina}
                         className="block rounded-lg px-2 py-1.5 text-sm text-fg-soft transition-colors hover:bg-fg/5 hover:text-fg"
                       >
                         {servizio.nome}
@@ -208,10 +248,10 @@ export default function Header() {
             ))}
           </div>
 
-          <div className="mt-7 border-t border-line pt-5">
+          <div className="border-t border-line pt-5">
             <Link
               href="/servizi"
-              onClick={() => setMegaOpen(false)}
+              onClick={chiudiTendina}
               className="text-sm font-semibold text-accent-soft"
             >
               Tutte le aree di competenza →

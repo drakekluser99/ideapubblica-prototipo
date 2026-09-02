@@ -60,6 +60,10 @@ export type ServiceDetail = {
   destinatari: readonly string[];
   risultati: readonly string[];
   riferimenti?: string;
+  /* Locandina del servizio ospitata sul sito attuale. Finché i PDF non
+     vengono spostati, li serviamo da lì: sono già pubblici e aggiornati
+     da chi li produce. */
+  pdf?: string;
 };
 
 export type ServiceItem = {
@@ -159,6 +163,7 @@ export const serviceItems: readonly ServiceItem[] = [
         "Inventari aggiornati dei beni mobili e immobili",
       ],
       riferimenti: "D.Lgs. 118/2011 · principio contabile applicato allegato 4/3",
+      pdf: "https://ideapubblica.it/wp-content/uploads/2026/03/Locandina-CEP_compressed.pdf",
     },
   },
   {
@@ -192,6 +197,7 @@ export const serviceItems: readonly ServiceItem[] = [
         "Riscontro sui dati che incidono di più sul calcolo del fabbisogno",
       ],
       riferimenti: "Fabbisogni standard · questionari SOSE",
+      pdf: "https://ideapubblica.it/wp-content/uploads/2026/02/2.Questionario-SOSE_compressed-1.pdf",
     },
   },
   {
@@ -220,6 +226,7 @@ export const serviceItems: readonly ServiceItem[] = [
         "Documentazione di supporto per la sottoscrizione dell'organo di revisione",
       ],
       riferimenti: "Art. 4 e 4-bis D.Lgs. 149/2011",
+      pdf: "https://ideapubblica.it/wp-content/uploads/2026/02/3.Relazione-di-inizio-e-fine-mandato_compressed.pdf",
     },
   },
   {
@@ -254,6 +261,7 @@ export const serviceItems: readonly ServiceItem[] = [
         "Schemi di delibera per l'approvazione",
       ],
       riferimenti: "D.Lgs. 118/2011 · principio contabile applicato alla programmazione",
+      pdf: "https://ideapubblica.it/wp-content/uploads/2026/02/4.DUP-Documento-unico-di-programmazione_compressed.pdf",
     },
   },
   {
@@ -290,6 +298,7 @@ export const serviceItems: readonly ServiceItem[] = [
         "Referto annuale del controllo di gestione",
       ],
       riferimenti: "Art. 198-bis TUEL",
+      pdf: "https://ideapubblica.it/wp-content/uploads/2026/02/5.Controllo-di-Gestione_compressed.pdf",
     },
   },
   {
@@ -323,6 +332,7 @@ export const serviceItems: readonly ServiceItem[] = [
         "Report intermedio e finale di controllo strategico",
       ],
       riferimenti: "Art. 147-ter TUEL",
+      pdf: "https://ideapubblica.it/wp-content/uploads/2026/02/6.Controllo-strategico_compressed.pdf",
     },
   },
   // Voci della stessa categoria ancora senza pagina di dettaglio.

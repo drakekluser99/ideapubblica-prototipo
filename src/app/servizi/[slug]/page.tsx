@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowUpRight, Check, FileText, Users } from "lucide-react";
+import { ArrowUpRight, Check, Download, FileText, Users } from "lucide-react";
 import {
   serviziConPagina,
   servizioPerSlug,
@@ -170,6 +170,35 @@ export default async function ServizioPage({ params }: { params: Promise<{ slug:
                   </div>
                 </Reveal>
               </div>
+
+              {/*
+                Locandina in PDF.
+
+                Il file sta ancora sul sito attuale, quindi è un link esterno:
+                `target="_blank"` per non far perdere il segno a chi sta
+                leggendo, e `rel="noopener noreferrer"` come per ogni link
+                che esce dal nostro dominio.
+
+                Niente attributo `download`: funziona solo sui file dello
+                stesso dominio, e su un file altrui verrebbe ignorato in
+                silenzio — meglio dire apertamente che si apre il PDF.
+                Il peso non lo dichiariamo perché non lo conosciamo: scriverlo
+                a caso è peggio che ometterlo.
+              */}
+              {dettaglio.pdf ? (
+                <Reveal>
+                  <a
+                    href={dettaglio.pdf}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="tinta-bordo tinta-fondo mt-10 inline-flex items-center gap-2.5 rounded-full border px-6 py-3.5 text-sm font-semibold text-fg transition-transform duration-300 hover:-translate-y-0.5"
+                  >
+                    <Download size={16} aria-hidden className="tinta-testo" />
+                    Scarica la scheda in PDF
+                    <span className="sr-only">(si apre in una nuova scheda)</span>
+                  </a>
+                </Reveal>
+              ) : null}
 
               {dettaglio.riferimenti ? (
                 <p className="mt-8 border-t border-line pt-5 text-xs text-fg-faint">
