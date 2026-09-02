@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { contact, nav } from "@/data/content";
 import { esterno, AVVISO_NUOVA_SCHEDA } from "@/lib/link";
 import Logo from "@/components/ui/logo";
@@ -52,16 +53,28 @@ export default function Footer() {
               // Stessa lista dell'header, stessa distinzione: la voce che
               // esce dal sito apre una scheda nuova e lo dichiara.
               const fuori = esterno(item.href);
+              const classe = "inline-block py-1 text-sm text-fg-soft transition-colors hover:text-fg";
+
               return (
                 <li key={item.href}>
-                  <a
-                    href={item.href}
-                    {...(fuori ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                    className="inline-block py-1 text-sm text-fg-soft transition-colors hover:text-fg"
-                  >
-                    {item.label}
-                    {fuori && <span className="sr-only"> {AVVISO_NUOVA_SCHEDA}</span>}
-                  </a>
+                  {fuori ? (
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={classe}
+                    >
+                      {item.label}
+                      <span className="sr-only"> {AVVISO_NUOVA_SCHEDA}</span>
+                    </a>
+                  ) : (
+                    /* Dentro il sito si naviga con <Link>: niente ricarica
+                       del documento, e la destinazione viene precaricata
+                       mentre il link è in vista. */
+                    <Link href={item.href} className={classe}>
+                      {item.label}
+                    </Link>
+                  )}
                 </li>
               );
             })}

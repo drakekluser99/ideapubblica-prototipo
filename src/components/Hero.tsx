@@ -1,5 +1,6 @@
 import { ArrowRight, ShieldCheck } from "lucide-react";
 import { hero, heroStats } from "@/data/content";
+import Link from "next/link";
 import ShinyButton from "@/components/ui/shiny-button";
 import Reveal from "@/components/ui/reveal";
 import Counter from "@/components/ui/counter";
@@ -75,12 +76,12 @@ export default function Hero() {
                   animati affiancati si rubano l'attenzione a vicenda e
                   nessuno dei due funziona. Una gerarchia chiara vale più di
                   un effetto in più. */}
-              <a
+              <Link
                 href={hero.secondaryCta.href}
                 className="inline-flex items-center gap-2 rounded-full border border-line px-7 py-3.5 text-sm font-medium text-fg/85 transition-colors hover:border-line-strong hover:bg-fg/5 hover:text-fg"
               >
                 {hero.secondaryCta.label}
-              </a>
+              </Link>
             </div>
           </Reveal>
 

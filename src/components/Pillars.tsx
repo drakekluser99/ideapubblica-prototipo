@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowUpRight, Boxes, Check, GraduationCap, LayoutGrid } from "lucide-react";
 import { pillars } from "@/data/content";
 import SectionHeading from "@/components/ui/section-heading";
@@ -39,7 +40,10 @@ export default function Pillars() {
             const Icon = icons[pillar.icon];
             return (
               <Reveal key={pillar.title} delay={i * 110} className="h-full">
-                <a
+                {/* <Link> e non <a>: dentro il sito la navigazione resta
+                    nell'applicazione, senza ricaricare il documento (e senza
+                    il lampo che si vedeva prima). Vedi ui/shiny-button.tsx. */}
+                <Link
                   href={pillar.href}
                   /* La classe `tinta-*` non colora nulla da sola: imposta la
                      variabile --tinta, che gli elementi interni leggono con
@@ -74,7 +78,7 @@ export default function Pillars() {
                     Approfondisci
                     <ArrowUpRight size={16} />
                   </span>
-                </a>
+                </Link>
               </Reveal>
             );
           })}

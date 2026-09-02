@@ -49,14 +49,120 @@ import { usePathname } from "next/navigation";
 
 const EVENTO_URL = "ip:navigazione";
 
-/** Quanti fotogrammi aspettare al massimo che l'àncora compaia nel DOM. */
-const TENTATIVI_MAX = 30;
+/*
+  Quanti fotogrammi aspettare al massimo che l'àncora compaia nel DOM.
+
+  Erano 30 (mezzo secondo) e non bastavano per il caso più lento: arrivare a
+  /#contatti da un'altra pagina. Lì la sezione non esiste finché Next non ha
+  scaricato e disegnato la home, e su rete reale ci vuole di più. Scaduti i
+  tentativi rinunciavamo, e subito dopo Next faceva il salto per conto suo —
+  animato, cioè esattamente quello che stiamo evitando. Due secondi coprono
+  la navigazione lenta senza rischiare un'attesa percepibile: se l'àncora non
+  c'è, nel frattempo non è successo nulla di visibile.
+*/
+const TENTATIVI_MAX = 120;
 
 /** Finestra dopo un indietro/avanti in cui lasciamo decidere il browser. */
 const MS_DOPO_INDIETRO = 600;
 
+/*
+  Oltre questa distanza (in schermate) un salto non va animato.
+
+  Il caso che ha fatto scoprire la cosa: dalla cima della home, "Contattaci"
+  porta a #contatti, che sta a 7.300 px. Con `scroll-behavior: smooth` il
+  browser ci arriva scorrendo, e in quel secondo scarso l'intera home passa
+  davanti agli occhi: si legge come uno sfarfallio, o come una pagina che
+  "sta caricando". Peggiora la sezione Reveal, perché lo scorrimento tocca
+  tutte le sezioni per strada e le fa comparire tutte insieme dietro di noi.
+
+  Due schermate è la soglia dove l'animazione smette di orientare e comincia
+  a disorientare: sotto, aiuta a capire dove si è finiti; sopra, è solo
+  velocità inutile.
+*/
+const SOGLIA_SCHERMATE = 2;
+
+/** Quanto teniamo sospeso lo scorrimento animato dopo un click o una navigazione. */
+const MS_SOSPENSIONE = 500;
+
 let sondaInstallata = false;
 let istanteIndietro = -Infinity;
+let timerSospensione: ReturnType<typeof setTimeout> | undefined;
+
+/*
+  Sospende temporaneamente lo scorrimento animato.
+
+  Non scorriamo noi al posto del browser: gli togliamo per mezzo secondo il
+  `scroll-behavior: smooth`, e lui fa lo stesso salto senza animarlo. È la
+  differenza fra spegnere un interruttore e riscrivere l'impianto — e vale
+  anche per gli scorrimenti che NON facciamo noi, come quello che Next
+  esegue per conto suo quando l'URL ha un'àncora.
+
+  Ripristinare con stringa vuota (non "smooth") rimette in gioco il foglio di
+  stile: così chi ha chiesto meno animazioni continua ad averne meno, senza
+  che questo file debba saperlo.
+*/
+function sospendiScorrimentoAnimato() {
+  if (typeof document === "undefined") return;
+  document.documentElement.style.scrollBehavior = "auto";
+  clearTimeout(timerSospensione);
+  timerSospensione = setTimeout(() => {
+    document.documentElement.style.scrollBehavior = "";
+  }, MS_SOSPENSIONE);
+}
+
+/**
+ * Distanza in pixel fra la posizione attuale e l'àncora indicata.
+ * `null` se quell'elemento nella pagina non c'è.
+ */
+function distanzaDa(ancora: string): number | null {
+  const el = document.getElementById(ancora);
+  return el ? Math.abs(el.getBoundingClientRect().top) : null;
+}
+
+/*
+  Click su un link che punta a un'àncora.
+
+  Serve perché non tutti i salti passano da noi: un `<a href="#area">` come
+  quelli dell'indice laterale di /servizi lo gestisce il browser da solo, e
+  legge `scroll-behavior` nell'istante del click. Intervenendo qui, prima che
+  il salto parta, la regola vale anche per quelli.
+
+  Non chiamiamo `preventDefault`: il salto lo fa il browser come sempre, noi
+  cambiamo solo come lo fa. Meno codice nostro nel percorso, meno cose che
+  possono rompersi.
+
+  Le esclusioni sono quelle d'obbligo per chiunque intercetti dei click:
+  tasto non sinistro, tasti modificatori (ctrl/cmd = apri in un'altra scheda),
+  link già gestito da qualcun altro, link che esce dal sito o che apre altrove.
+*/
+function alClick(e: MouseEvent) {
+  if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
+    return;
+  }
+
+  const bersaglio = e.target;
+  if (!(bersaglio instanceof Element)) return;
+
+  const link = bersaglio.closest("a[href]");
+  if (!(link instanceof HTMLAnchorElement) || link.target === "_blank") return;
+
+  let url: URL;
+  try {
+    url = new URL(link.href, window.location.href);
+  } catch {
+    return;
+  }
+  if (url.origin !== window.location.origin || !url.hash) return;
+
+  // Verso un'altra pagina la distanza non è calcolabile — e non serve:
+  // l'atterraggio su una pagina nuova non va mai animato.
+  const altraPagina = url.pathname !== window.location.pathname;
+  const distanza = altraPagina ? Infinity : distanzaDa(decodeURIComponent(url.hash.slice(1)));
+
+  if (distanza !== null && distanza > SOGLIA_SCHERMATE * window.innerHeight) {
+    sospendiScorrimentoAnimato();
+  }
+}
 
 /*
   Perché serve una "sonda" su history.
@@ -95,6 +201,16 @@ function installaSonda() {
 function sistemaScroll(tentativo = 0) {
   if (performance.now() - istanteIndietro < MS_DOPO_INDIETRO) return;
 
+  /*
+    Una navigazione non si anima mai, qualunque sia la distanza: la pagina
+    d'arrivo va mostrata, non sorvolata. Lo facciamo anche qui e non solo nel
+    gestore del click, perché a una navigazione si può arrivare anche senza
+    click (router.push da codice, un redirect), e perché lo scorrimento che
+    conta potrebbe non essere il nostro: Next ne esegue uno suo poco dopo, e
+    la sospensione vale anche per quello.
+  */
+  sospendiScorrimentoAnimato();
+
   const ancora = decodeURIComponent(window.location.hash.slice(1));
 
   if (!ancora) {
@@ -116,6 +232,11 @@ function sistemaScroll(tentativo = 0) {
     ciclo infinito.
   */
   if (tentativo < TENTATIVI_MAX) {
+    // Rinnoviamo la sospensione a ogni tentativo: finché stiamo aspettando la
+    // sezione, lo scorrimento animato deve restare spento. Altrimenti la
+    // sospensione (mezzo secondo) scade prima dell'arrivo della pagina e
+    // l'animazione che volevamo evitare parte lo stesso.
+    sospendiScorrimentoAnimato();
     requestAnimationFrame(() => sistemaScroll(tentativo + 1));
   }
 }
@@ -130,6 +251,14 @@ export default function ScrollManager() {
     const alCambioUrl = () => sistemaScroll();
     window.addEventListener(EVENTO_URL, alCambioUrl);
 
+    /*
+      In fase di CATTURA (il `true` finale): l'evento passa da qui mentre
+      scende verso il link, quindi prima di qualunque `onClick` di React e
+      prima del comportamento predefinito del browser. Se aspettassimo la
+      risalita, il salto sarebbe già partito animato.
+    */
+    document.addEventListener("click", alClick, true);
+
     // Al primo caricamento non interveniamo: l'àncora dell'URL e il ripristino
     // dopo un refresh a metà pagina sono già gestiti nativamente dal browser.
     if (primoRender.current) {
@@ -138,7 +267,10 @@ export default function ScrollManager() {
       sistemaScroll();
     }
 
-    return () => window.removeEventListener(EVENTO_URL, alCambioUrl);
+    return () => {
+      window.removeEventListener(EVENTO_URL, alCambioUrl);
+      document.removeEventListener("click", alClick, true);
+    };
   }, [pathname]);
 
   return null;
