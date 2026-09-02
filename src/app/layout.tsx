@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import ScrollManager from "@/components/ui/scroll-manager";
 
 // Tipografia: Instrument Sans (titoli) + Inter (testo), auto-ospitati con i
 // pacchetti @fontsource-variable importati in globals.css. Rispetto a
@@ -40,7 +41,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           }}
         />
       </head>
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        {/* Non disegna niente: rimette la pagina in cima (o sull'àncora) a ogni
+            cambio di rotta. Sta nel layout perché deve valere ovunque — vedi il
+            commento lungo dentro il componente. */}
+        <ScrollManager />
+        {children}
+      </body>
     </html>
   );
 }

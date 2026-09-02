@@ -81,21 +81,19 @@ export default function Header() {
   }, [megaOpen]);
 
   /*
-    Chiude la tendina e garantisce che la pagina nuova parta dall'alto.
+    Chiude la tendina, e basta.
 
-    Next porta già in cima quando cambia rotta, ma con la tendina aperta al
-    momento del click si sono visti atterraggi a metà pagina: il pannello
-    traboccava (vedi sotto) e alterava la geometria del documento proprio
-    mentre la navigazione partiva. Corretto il traboccamento la causa
-    dovrebbe essere sparita; questa riga costa nulla e toglie il dubbio.
+    Qui c'era anche un `window.scrollTo` in `requestAnimationFrame`, messo
+    quando l'atterraggio a fondo pagina sembrava un effetto collaterale del
+    menu. Non lo era: la pagina non veniva riportata in cima da NESSUN link
+    interno, tendina o no. La causa e la correzione stanno in
+    `components/ui/scroll-manager.tsx`, montato nel layout.
 
-    `requestAnimationFrame` serve a rimandare lo scroll al disegno
-    successivo: farlo subito significherebbe agire sulla pagina vecchia.
+    Quella riga andava tolta, non solo resa superflua: senza `behavior`
+    esplicito ereditava lo `scroll-behavior: smooth` di <html>, quindi
+    avviava un'animazione che il nuovo gestore avrebbe dovuto interrompere.
   */
-  const chiudiTendina = () => {
-    setMegaOpen(false);
-    requestAnimationFrame(() => window.scrollTo({ top: 0 }));
-  };
+  const chiudiTendina = () => setMegaOpen(false);
 
   return (
     <header
