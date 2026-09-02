@@ -13,7 +13,7 @@
   Funziona da qualunque pagina, home compresa.
 */
 export const nav = [
-  { label: "Chi siamo", href: "/#chi-siamo" },
+  { label: "Chi siamo", href: "/chi-siamo" },
   { label: "Servizi", href: "/servizi" },
   { label: "Formazione", href: "/#formazione" },
   { label: "Filodiretto", href: "/#filodiretto" },
@@ -236,4 +236,108 @@ export const contact = {
     { label: "LinkedIn", icon: "linkedin", href: "https://www.linkedin.com/company/ideapubblica/" },
     { label: "YouTube", icon: "youtube", href: "https://www.youtube.com/channel/UC7QS1ZegA5IXBK6ZrY3oJiQ" },
   ],
+} as const;
+
+/*
+  Pagina /chi-siamo.
+
+  I contenuti vengono dalla pagina "Il nostro manifesto" del sito attuale,
+  riscritti nella voce del sito nuovo: seconda persona plurale ("affianchiamo"),
+  frasi corte, niente autocelebrazione generica. Il senso è quello originale —
+  origine nel 2015, filosofia centrata su chi lavora nell'ente, quattro colonne
+  del manifesto — e va comunque validato dal cliente.
+
+  Come per i servizi, `tint` e `icon` sono CHIAVI, non colori né componenti:
+  la traduzione la fa la pagina. Così questo file resta di soli dati
+  serializzabili, pronto per un CMS.
+*/
+export const chiSiamo = {
+  eyebrow: "Chi siamo",
+  titleLead: "Professionisti al servizio",
+  titleAccent: "delle idee in comune",
+  claim:
+    "Ideapubblica nasce nel 2015 dall'incontro di professionisti che nel settore pubblico lavorano da sempre. Non consulenti prestati alla PA: persone che conoscono le scadenze, i vincoli e la fatica di chi sta dentro l'ente.",
+
+  storia: {
+    eyebrow: "La nostra idea",
+    title: "Partiamo da chi il lavoro lo fa, non dalla norma",
+    paragrafi: [
+      "Servizi, formazione e software sono tre modi di rispondere allo stesso bisogno: dare nuovo impulso alla pubblica amministrazione con soluzioni che funzionano davvero, e con attenzione alla qualità di ciò che consegniamo.",
+      "Al centro mettiamo le esigenze di chi opera ogni giorno nell'ente locale — amministratori, segretari, responsabili e dirigenti. I servizi li disegniamo su misura, i corsi li costruiamo sulle necessità di apprendimento reali, non su un catalogo deciso a tavolino.",
+      "L'obiettivo dichiarato è facilitare il lavoro dell'ente e favorirne la crescita, attraverso l'innovazione e la condivisione delle esperienze: un servizio a regola d'arte che restituisce valore al territorio e ai cittadini.",
+    ],
+  },
+
+  // Numeri già presenti in home: qui li ripetiamo perché una pagina "chi
+  // siamo" senza ordini di grandezza resta un'affermazione. Stime prudenti,
+  // da validare col cliente esattamente come quelle dell'hero.
+  // `raw: true` = mostra il numero così com'è, senza contatore animato.
+  // Un anno che sale da 0 a 2015 sembra un errore, non un effetto.
+  // Il campo c'è su TUTTE le voci, anche dove è false: con `as const` una
+  // proprietà presente solo su alcuni elementi rende il tipo un'unione, e
+  // leggerla nel JSX darebbe errore di compilazione.
+  numeri: [
+    { value: 2015, suffix: "", label: "l'anno in cui siamo partiti", raw: true },
+    { value: 300, suffix: "+", label: "enti e partecipate seguiti", raw: false },
+    { value: 6, suffix: "", label: "aree di competenza", raw: false },
+  ],
+
+  manifesto: {
+    eyebrow: "Il nostro manifesto",
+    titleLead: "Insieme per una pubblica amministrazione",
+    titleAccent: "più dinamica ed efficiente",
+    description:
+      "Il know-how individuale messo al servizio del pubblico per generare valore. Sono le quattro colonne su cui appoggiamo ogni incarico — e il metro con cui ci si può misurare.",
+    colonne: [
+      {
+        titolo: "Ricerca dell'innovazione",
+        icon: "innovazione",
+        tint: "blu",
+        testo:
+          "L'aggiornamento normativo è un dovere, ma per noi è anche una passione. Traduciamo le norme nuove in pratica operativa e progettiamo soluzioni che stiano al passo, per dare risposte immediate invece che rinvii.",
+      },
+      {
+        titolo: "Flessibilità nelle soluzioni",
+        icon: "soluzioni",
+        tint: "ambra",
+        testo:
+          "Nessun ente è uguale a un altro. Il servizio è sartoriale, cucito sulla singola realtà: ogni soluzione deve rispondere a un problema preciso e offrire un'alternativa concreta, non un modello da riempire.",
+      },
+      {
+        titolo: "Attenzione alla qualità",
+        icon: "qualita",
+        tint: "verde",
+        testo:
+          "La PA è governata da un intreccio di regole difficili da interpretare e da applicare. Curiamo i servizi con scrupolo e cerchiamo la soluzione più corretta, perché la piena aderenza alla norma è ciò che lascia tranquillo chi si affida a noi.",
+      },
+      {
+        titolo: "Etica nelle relazioni",
+        icon: "relazioni",
+        tint: "viola",
+        testo:
+          "I rapporti personali e i bisogni reali dell'ente vengono prima del risultato commerciale. Quello che conta non è massimizzare, è risolvere problemi e costruire relazioni solide, fondate su fiducia e stima reciproca.",
+      },
+    ],
+  },
+
+  destinatari: {
+    title: "Con chi lavoriamo ogni giorno",
+    voci: [
+      {
+        ruolo: "Amministratori",
+        icon: "amministratori",
+        testo: "Sindaci e assessori che devono decidere avendo davanti numeri leggibili.",
+      },
+      {
+        ruolo: "Segretari",
+        icon: "segretari",
+        testo: "Chi presidia legittimità, trasparenza e anticorruzione con poco tempo e molte firme.",
+      },
+      {
+        ruolo: "Responsabili e dirigenti",
+        icon: "responsabili",
+        testo: "Chi tiene insieme scadenze, uffici sotto organico e adempimenti che non slittano.",
+      },
+    ],
+  },
 } as const;
