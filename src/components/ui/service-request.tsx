@@ -47,7 +47,7 @@ export default function ServiceRequest({ servizio }: { servizio: string }) {
                 Parliamo di <span className="text-gradient">{servizio}</span>
               </h2>
               <p className="mt-4 text-sm leading-relaxed text-fg-soft">
-                Scriveteci la situazione dell&rsquo;ente e la scadenza che avete davanti.
+                Scriveteci la situazione dell&apos;ente e la scadenza che avete davanti.
                 Rispondiamo entro un giorno lavorativo con una persona, non con un preventivo
                 automatico.
               </p>

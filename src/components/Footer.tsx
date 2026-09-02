@@ -1,4 +1,5 @@
 import { contact, nav } from "@/data/content";
+import { esterno, AVVISO_NUOVA_SCHEDA } from "@/lib/link";
 import Logo from "@/components/ui/logo";
 import { socialIcons } from "@/components/ui/social-icons";
 
@@ -47,13 +48,23 @@ export default function Footer() {
         <nav aria-label="Navigazione footer">
           <h3 className="eyebrow mb-4 text-fg-faint">Naviga</h3>
           <ul className="space-y-2.5">
-            {nav.map((item) => (
-              <li key={item.href}>
-                <a href={item.href} className="inline-block py-1 text-sm text-fg-soft transition-colors hover:text-fg">
-                  {item.label}
-                </a>
-              </li>
-            ))}
+            {nav.map((item) => {
+              // Stessa lista dell'header, stessa distinzione: la voce che
+              // esce dal sito apre una scheda nuova e lo dichiara.
+              const fuori = esterno(item.href);
+              return (
+                <li key={item.href}>
+                  <a
+                    href={item.href}
+                    {...(fuori ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                    className="inline-block py-1 text-sm text-fg-soft transition-colors hover:text-fg"
+                  >
+                    {item.label}
+                    {fuori && <span className="sr-only"> {AVVISO_NUOVA_SCHEDA}</span>}
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         </nav>
 
@@ -88,7 +99,7 @@ export default function Footer() {
       <div className="border-t border-line">
         <div className="shell flex flex-col gap-2 py-6 text-xs text-fg-faint sm:flex-row sm:items-center sm:justify-between">
           <p>© {year} Ideapubblica srl — P.IVA e C.F. 02590670416</p>
-          <p>Prototipo di homepage — contenuti da validare con il cliente.</p>
+          <p>Prototipo — contenuti da validare con il cliente.</p>
         </div>
       </div>
     </footer>

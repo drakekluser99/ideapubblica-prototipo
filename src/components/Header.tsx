@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ChevronDown, LogIn, Menu, X } from "lucide-react";
-import { nav, filodiretto } from "@/data/content";
+import { ArrowUpRight, ChevronDown, Menu, X } from "lucide-react";
+import { nav } from "@/data/content";
+import { esterno, AVVISO_NUOVA_SCHEDA } from "@/lib/link";
 import { serviceCategories, serviziDiCategoria, linkServizio } from "@/data/services";
 import ShinyButton from "@/components/ui/shiny-button";
 import Logo from "@/components/ui/logo";
@@ -140,6 +141,21 @@ export default function Header() {
                   className={`transition-transform duration-200 ${megaOpen ? "rotate-180" : ""}`}
                 />
               </button>
+            ) : esterno(item.href) ? (
+              /* Voce che porta fuori dal sito (oggi solo Filodiretto).
+                 La freccia in diagonale è la convenzione visiva del "si apre
+                 altrove"; per chi non la vede c'è l'avviso testuale. */
+              <a
+                key={item.href}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative flex items-center gap-1 rounded-full px-4 py-3 text-sm font-medium text-fg-soft transition-colors hover:text-fg focus-visible:text-fg"
+              >
+                {item.label}
+                <ArrowUpRight size={14} aria-hidden className="opacity-60" />
+                <span className="sr-only">{AVVISO_NUOVA_SCHEDA}</span>
+              </a>
             ) : (
               <Link
                 key={item.href}
@@ -153,16 +169,9 @@ export default function Header() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <a
-            href={filodiretto.accessoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-full px-4 py-3 text-sm font-medium text-fg-soft transition-colors hover:text-fg"
-          >
-            <LogIn size={15} aria-hidden />
-            Area riservata
-            <span className="sr-only">(si apre in una nuova scheda)</span>
-          </a>
+          {/* Qui stava "Area riservata", che portava allo stesso dominio della
+              voce Filodiretto: due pulsanti per la stessa destinazione
+              costringono a scegliere senza motivo. Ne resta uno solo. */}
           <ThemeToggle />
           <ShinyButton href="/#contatti" className="!px-6 !py-3 !text-sm">
             Contattaci
@@ -311,6 +320,19 @@ export default function Header() {
                   </ul>
                 )}
               </div>
+            ) : esterno(item.href) ? (
+              <a
+                key={item.href}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2 rounded-xl px-3 py-3 text-base font-medium text-fg-soft transition-colors hover:bg-fg/5 hover:text-fg"
+              >
+                {item.label}
+                <ArrowUpRight size={15} aria-hidden className="opacity-60" />
+                <span className="sr-only">{AVVISO_NUOVA_SCHEDA}</span>
+              </a>
             ) : (
               <Link
                 key={item.href}
@@ -322,18 +344,6 @@ export default function Header() {
               </Link>
             ),
           )}
-
-          <a
-            href={filodiretto.accessoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => setOpen(false)}
-            className="inline-flex items-center gap-2 rounded-xl px-3 py-3 text-base font-medium text-fg-soft transition-colors hover:bg-fg/5 hover:text-fg"
-          >
-            <LogIn size={16} aria-hidden />
-            Area riservata
-            <span className="sr-only">(si apre in una nuova scheda)</span>
-          </a>
 
           <Link
             href="/#contatti"

@@ -27,7 +27,32 @@ export type NewsFilodiretto = {
   immagine: string | null;
 };
 
-const BASE = "https://filodirettorup.ideapubblica.it/wp-json/wp/v2";
+const ORIGINE_PORTALE = "https://filodirettorup.ideapubblica.it";
+const BASE = `${ORIGINE_PORTALE}/wp-json/wp/v2`;
+
+/*
+  Il link di ogni articolo arriva da WordPress e finisce dritto in un `href`.
+  Finché il portale è integro non c'è problema, ma è un sito che non
+  controlliamo: se un giorno venisse manomesso, un `link` fatto di
+  "javascript:…" o "data:…" diventerebbe codice eseguito dentro il NOSTRO
+  dominio nel momento in cui qualcuno ci clicca sopra.
+
+  React di suo blocca gli href "javascript:", ma non è una difesa su cui
+  appoggiarsi: la regola giusta è non fidarsi del dato che arriva da fuori.
+  Qui accettiamo solo URL assoluti che stanno davvero sul portale — schema
+  https e stesso host. Tutto il resto viene scartato e l'articolo non esce.
+
+  `new URL` lancia su una stringa che non è un URL: da qui il try/catch.
+*/
+function linkAmmesso(link: unknown): link is string {
+  if (typeof link !== "string") return false;
+  try {
+    const u = new URL(link);
+    return u.protocol === "https:" && u.origin === ORIGINE_PORTALE;
+  } catch {
+    return false;
+  }
+}
 
 /*
   WordPress restituisce i titoli con le entità HTML già codificate
@@ -92,23 +117,34 @@ export async function ultimeNews(quante = 3): Promise<NewsFilodiretto[]> {
     const dati: unknown = await risposta.json();
     if (!Array.isArray(dati)) return [];
 
-    return dati.map((post: Record<string, never>) => {
-      const p = post as unknown as {
-        id: number;
-        date: string;
-        link: string;
-        title: { rendered: string };
-        _embedded?: { "wp:featuredmedia"?: Array<{ source_url?: string }> };
-      };
+    return dati
+      .map((post: Record<string, never>) => {
+        const p = post as unknown as {
+          id: number;
+          date: string;
+          link: string;
+          title: { rendered: string };
+          _embedded?: { "wp:featuredmedia"?: Array<{ source_url?: string }> };
+        };
 
-      return {
-        id: p.id,
-        titolo: decodificaEntita(p.title?.rendered ?? ""),
-        data: p.date,
-        link: p.link,
-        immagine: p._embedded?.["wp:featuredmedia"]?.[0]?.source_url ?? null,
-      };
-    });
+        // Un articolo senza link utilizzabile non lo mostriamo: meglio due
+        // news invece di tre che un link su cui non ci fidiamo.
+        if (!linkAmmesso(p.link)) return null;
+
+        const immagine = p._embedded?.["wp:featuredmedia"]?.[0]?.source_url ?? null;
+
+        return {
+          id: p.id,
+          titolo: decodificaEntita(p.title?.rendered ?? ""),
+          data: p.date,
+          link: p.link,
+          // Stessa logica per l'immagine. `remotePatterns` in next.config.ts
+          // già rifiuta gli host non dichiarati, ma lì l'esito è un errore in
+          // fase di render: qui la scartiamo prima e la card resta senza foto.
+          immagine: linkAmmesso(immagine) ? immagine : null,
+        };
+      })
+      .filter((n): n is NewsFilodiretto => n !== null);
   } catch {
     /*
       Portale irraggiungibile, lento o in manutenzione.

@@ -5,19 +5,26 @@
 // non scrive codice.
 
 /*
-  Gli href sono ASSOLUTI ("/#formazione", non "#formazione").
+  Le àncore sono ASSOLUTE ("/#contatti", non "#contatti").
 
-  Finché esisteva solo la home un'àncora nuda bastava. Ora che ci sono pagine
-  interne, "#formazione" su /servizi cercherebbe una sezione che lì non
-  esiste. La forma "/#formazione" dice invece: vai alla home, poi scorri.
-  Funziona da qualunque pagina, home compresa.
+  Finché esisteva solo la home un'àncora nuda bastava. Con le pagine interne,
+  "#contatti" su /servizi cercherebbe una sezione che lì non esiste. La forma
+  "/#contatti" dice invece: vai alla home, poi scorri. Funziona da qualunque
+  pagina, home compresa.
 */
 export const nav = [
   { label: "Chi siamo", href: "/chi-siamo" },
   { label: "Servizi", href: "/servizi" },
-  { label: "Formazione", href: "/#formazione" },
-  { label: "Filodiretto", href: "/#filodiretto" },
-  { label: "Software", href: "/#software" },
+  { label: "Formazione", href: "/formazione" },
+  // Filodiretto è l'unica voce che esce dal sito: porta direttamente al
+  // portale in abbonamento. Prima puntava alla sezione vetrina in home e
+  // accanto c'era un secondo pulsante "Area riservata" per lo stesso
+  // dominio — due strade per lo stesso posto, una di troppo.
+  // Header e Footer riconoscono i link esterni dal prefisso "http" e
+  // aggiungono da soli target/rel e l'avviso per i lettori di schermo:
+  // vedi `esterno()` in lib/link.ts.
+  { label: "Filodiretto", href: "https://filodirettorup.ideapubblica.it/" },
+  { label: "Software", href: "/software" },
   { label: "Contatti", href: "/#contatti" },
 ] as const;
 
@@ -30,7 +37,7 @@ export const hero = {
   subtitle:
     "Dal 2015 affianchiamo comuni, province e società partecipate su contabilità, controllo di gestione, privacy, anticorruzione e tributi: consulenza, formazione e software che parlano la stessa lingua.",
   primaryCta: { label: "Parla con un consulente", href: "/#contatti" },
-  secondaryCta: { label: "Scopri i software", href: "/#software" },
+  secondaryCta: { label: "Scopri i software", href: "/software" },
 } as const;
 
 // Numeri di sintesi mostrati sotto al claim. Da validare col cliente:
@@ -60,7 +67,7 @@ export const pillars = [
     description:
       "Percorsi formativi su misura, webinar e seminari per aggiornare in modo pratico chi lavora ogni giorno nella pubblica amministrazione.",
     bullets: ["Webinar in diretta", "Corsi su misura in ente", "Filodiretto RUP"],
-    href: "/#formazione",
+    href: "/formazione",
   },
   {
     title: "Software",
@@ -69,7 +76,7 @@ export const pillars = [
     description:
       "Strumenti digitali pensati per semplificare i processi degli enti: dalla gestione delle partecipate alla protezione dei dati.",
     bullets: ["P@rtecipo", "I-Privacy", "Economica"],
-    href: "/#software",
+    href: "/software",
   },
 ] as const;
 
@@ -114,6 +121,14 @@ export const softwareProducts = [
     description:
       "Ricerca e monitoraggio di finanziamenti europei, nazionali e regionali, filtrati sul profilo dell'ente.",
     features: ["Bandi filtrati per ente", "Avvisi sulle scadenze", "Schede di sintesi"],
+  },
+  {
+    name: "Cruscotting",
+    tint: "corallo",
+    icon: "dashboard",
+    description:
+      "Interfacce e cruscotti dinamici che raccolgono i dati dell'ente e li rendono leggibili in una schermata sola, senza estrazioni manuali.",
+    features: ["Rendiconto online", "Bilancio online", "Controllo di gestione strategico"],
   },
 ] as const;
 
@@ -337,6 +352,200 @@ export const chiSiamo = {
         ruolo: "Responsabili e dirigenti",
         icon: "responsabili",
         testo: "Chi tiene insieme scadenze, uffici sotto organico e adempimenti che non slittano.",
+      },
+    ],
+  },
+} as const;
+
+/*
+  Pagina /formazione.
+
+  Fonte: "Formazione per la pubblica amministrazione" del sito attuale.
+  I cinque formati e l'elenco docenti sono presi da lì; i testi che li
+  accompagnano sono riscritti. Ruoli e appartenenze dei docenti vanno
+  riconfermati: sul sito attuale possono essere fermi a qualche anno fa.
+*/
+export const formazionePage = {
+  eyebrow: "Formazione",
+  titleLead: "La formazione per gli enti",
+  titleAccent: "diventa sartoriale",
+  claim:
+    "Taglio pratico e operativo, costruito sui problemi di gestione quotidiana e sull'esperienza che i docenti hanno maturato sul campo. Non lezioni sulla norma: lezioni su cosa farne.",
+
+  approccio: {
+    eyebrow: "Il metodo",
+    title: "Prima la scadenza che avete davanti, poi il programma",
+    paragrafi: [
+      "Un corso serve se il giorno dopo si lavora meglio. Per questo partiamo dagli adempimenti reali dell'ente — la delibera da portare in giunta, il questionario da chiudere, il registro da aggiornare — e costruiamo intorno a quelli il percorso.",
+      "Chi insegna fa lo stesso mestiere di chi ascolta: dirigenti, funzionari e consulenti che gli stessi adempimenti li seguono nella pratica. È la differenza fra sapere cosa dice la norma e sapere cosa succede quando la si applica in un comune sotto organico.",
+      "I contenuti si personalizzano: stessa materia, taglio diverso a seconda che davanti ci sia una ragioneria, un ufficio tributi o un segretario che deve presidiare la trasparenza.",
+    ],
+  },
+
+  formati: [
+    {
+      nome: "Supporti formativi personalizzati",
+      icon: "personalizzato",
+      tint: "blu",
+      testo:
+        "Il percorso viene disegnato sull'ente: contenuti, durata e calendario nascono da un'analisi delle necessità reali, non da un catalogo.",
+    },
+    {
+      nome: "Webinar",
+      icon: "webinar",
+      tint: "verde",
+      testo:
+        "Sessioni brevi in diretta, con spazio per le domande. La formula più leggera per restare aggiornati senza spostare nessuno dall'ufficio.",
+    },
+    {
+      nome: "Seminari aperti",
+      icon: "seminario",
+      tint: "ambra",
+      testo:
+        "Giornate su un tema specifico, aperte a più enti. Il confronto tra amministrazioni diverse è metà del valore della giornata.",
+    },
+    {
+      nome: "Seminari in house",
+      icon: "inhouse",
+      tint: "viola",
+      testo:
+        "La stessa giornata, ma dentro l'ente e sui casi dell'ente: si lavora sui documenti veri, non su esempi di comodo.",
+    },
+    {
+      nome: "Laboratori",
+      icon: "laboratorio",
+      tint: "corallo",
+      testo:
+        "Gruppi piccoli, mani sulla tastiera: si esce con il documento cominciato, non con le dispense da leggere poi.",
+    },
+  ],
+
+  docenti: {
+    eyebrow: "Chi insegna",
+    title: "I docenti che rendono efficaci i nostri corsi",
+    description:
+      "Professionisti che lavorano dentro o accanto agli enti locali. Ogni scheda riporta il ruolo pubblicato sul sito attuale: da riconfermare prima della pubblicazione.",
+    elenco: [
+      {
+        nome: "Antonio Bertelli",
+        ruoli: [
+          "Dirigente del Comune di Livorno",
+          "Componente del gruppo tecnico ANCI Nazionale",
+          "Esperto di contratti e appalti",
+        ],
+      },
+      {
+        nome: "Paolo Braccini",
+        ruoli: [
+          "Socio fondatore di Ideapubblica",
+          "Dottore commercialista",
+          "Programmazione e controllo, organizzazione, risorse umane, performance",
+        ],
+      },
+      {
+        nome: "Cristina Carpenedo",
+        ruoli: [
+          "Funzionario tributi e riscossione del Comune di Jesolo",
+          "Esperta di tributi locali",
+          "Autrice di pubblicazioni in materia",
+        ],
+      },
+      {
+        nome: "Emanuele Cofanelli",
+        ruoli: ["Consulente privacy per enti locali e società partecipate"],
+      },
+      {
+        nome: "Alessandro Festa",
+        ruoli: ["Consulente esperto di finanza locale", "Docente in corsi di formazione"],
+      },
+      {
+        nome: "Daniela Ghiandoni",
+        ruoli: ["Dirigente contabile di ente locale", "Autrice di pubblicazioni specializzate"],
+      },
+      {
+        nome: "Maura Lucchini",
+        ruoli: [
+          "Istruttore direttivo contabile di ente locale",
+          "Esperta di personale e paghe",
+        ],
+      },
+      {
+        nome: "Elena Masini",
+        ruoli: [
+          "Socia fondatrice di Ideapubblica",
+          "Consulente per gli enti locali",
+          "Finanza, tributi e personale",
+          "Autrice di pubblicazioni ed editorialista",
+        ],
+      },
+      {
+        nome: "Cristina Muscillo",
+        ruoli: [
+          "Funzionaria contabile di ente locale",
+          "Esperta di contabilità",
+          "Autrice di pubblicazioni specializzate",
+        ],
+      },
+      {
+        nome: "Maria Cristina Panconi",
+        ruoli: [
+          "Responsabile della Centrale unica di committenza, provveditorato, economato e contratti",
+          "Economa comunale del Comune di Lucca",
+        ],
+      },
+      {
+        nome: "Emanuele Quercetti",
+        ruoli: [
+          "Consulente esperto di piani finanziari rifiuti",
+          "Tariffazione puntuale e progettazione dei servizi",
+        ],
+      },
+    ],
+  },
+} as const;
+
+/*
+  Pagina /software.
+
+  Fonte: "Software per la pubblica amministrazione" del sito attuale. Le
+  schede prodotto vivono in `softwareProducts` qui sopra — le stesse che usa
+  la home — così un applicativo si aggiorna in un punto solo e cambia in
+  entrambe le pagine.
+*/
+export const softwarePage = {
+  eyebrow: "Software",
+  titleLead: "Soluzioni pronte all'uso,",
+  titleAccent: "cucite sull'ente",
+  claim:
+    "Un servizio software in abbonamento, senza installazioni da presidiare: gli applicativi tengono sotto controllo gli equilibri economico-finanziari, aiutano a centrare gli obiettivi e tolgono passaggi burocratici invece di aggiungerne.",
+
+  vantaggi: {
+    eyebrow: "Come funziona",
+    title: "Software come servizio, non come progetto informatico",
+    voci: [
+      {
+        titolo: "Pronto all'uso",
+        icon: "pronto",
+        testo:
+          "Nessun server da comprare né installazione da coordinare con il CED: si accede dal browser e si comincia a lavorare.",
+      },
+      {
+        titolo: "Personalizzato",
+        icon: "personalizzato",
+        testo:
+          "La configurazione parte dai documenti e dalle prassi dell'ente, non da un modello standard da adattare a posteriori.",
+      },
+      {
+        titolo: "Sempre aggiornato",
+        icon: "aggiornato",
+        testo:
+          "Quando cambia una norma o uno schema di bilancio, l'aggiornamento arriva con il servizio: non è una nuova versione da acquistare.",
+      },
+      {
+        titolo: "Con chi lo ha pensato dietro",
+        icon: "assistenza",
+        testo:
+          "Chi risponde all'assistenza conosce l'adempimento, non solo il programma: è la stessa squadra che segue gli enti come consulente.",
       },
     ],
   },

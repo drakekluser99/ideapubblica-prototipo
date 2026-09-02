@@ -158,7 +158,7 @@ export default async function ServizioPage({ params }: { params: Promise<{ slug:
                   <div className="glass h-full rounded-3xl p-6">
                     <h2 className="eyebrow mb-4 flex items-center gap-2 text-fg-faint">
                       <FileText size={14} aria-hidden />
-                      Cosa resta all&rsquo;ente
+                      Cosa resta all&apos;ente
                     </h2>
                     <ul className="flex flex-col gap-2.5">
                       {dettaglio.risultati.map((voce) => (

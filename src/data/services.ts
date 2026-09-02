@@ -122,7 +122,7 @@ export const serviceItems: readonly ServiceItem[] = [
   // ─── Contabilità, programmazione e controllo ──────────────────────────
   {
     slug: "contabilita-economico-patrimoniale",
-    nome: "Contabilità economico patrimoniale",
+    nome: "Contabilità economico-patrimoniale",
     categoria: "contabilita-programmazione-controllo",
     sommario:
       "Impianto e tenuta della contabilità economico-patrimoniale, inventari e versione semplificata.",
@@ -132,7 +132,7 @@ export const serviceItems: readonly ServiceItem[] = [
         "Con il principio contabile applicato alla contabilità economico-patrimoniale, gli enti locali devono allegare al rendiconto i prospetti dello stato patrimoniale e del conto economico, redatti secondo il principio della competenza economica e seguendo la matrice di correlazione dei piani dei conti. Accanto alla contabilità finanziaria, l'ente deve quindi tenerne una seconda che misura costi, ricavi e valore del patrimonio — e le due devono raccontare la stessa storia.",
       blocchi: [
         {
-          titolo: "Redazione della contabilità economico patrimoniale",
+          titolo: "Redazione della contabilità economico-patrimoniale",
           testo:
             "Affianchiamo l'ente nella tenuta della contabilità con il metodo della partita doppia, producendo conto economico, stato patrimoniale, libro giornale e la documentazione a corredo. Il servizio è disponibile in tre modalità, che si scelgono in base a quanto l'ente vuole fare in proprio.",
           elenco: [
@@ -147,7 +147,7 @@ export const serviceItems: readonly ServiceItem[] = [
             "Aggiornamento annuale degli inventari dei beni mobili e immobili secondo i criteri del principio contabile allegato 4/3 al D.Lgs. 118/2011. È il presupposto perché lo stato patrimoniale dica qualcosa di vero: senza inventari aggiornati, i valori patrimoniali si trascinano di anno in anno.",
         },
         {
-          titolo: "Contabilità economico patrimoniale semplificata",
+          titolo: "Contabilità economico-patrimoniale semplificata",
           testo:
             "Per i comuni che accedono alla modalità semplificata prevista dalla normativa, la situazione patrimoniale si compila con il software Economica: fondo crediti di dubbia esigibilità, debiti, crediti, patrimonio netto e le altre poste patrimoniali.",
         },
@@ -207,7 +207,7 @@ export const serviceItems: readonly ServiceItem[] = [
     sommario:
       "Redazione dei documenti che aprono e chiudono il mandato amministrativo.",
     dettaglio: {
-      claim: "Da dove tutto inizia, e dove tutto si tira in somma",
+      claim: "Da dove comincia il mandato, e dove se ne tirano le somme",
       inquadramento:
         "Gli articoli 4 e 4-bis del D.Lgs. 149/2011 impongono all'ente di redigere una relazione di inizio mandato e una di fine mandato. Sono documenti che richiedono di raccogliere dati da tutti i settori e di ricostruire la situazione finanziaria in modo verificabile: la difficoltà non sta nella scrittura, ma nel reperire e riconciliare le informazioni nei tempi stretti previsti.",
       blocchi: [

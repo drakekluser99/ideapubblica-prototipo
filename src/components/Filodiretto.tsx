@@ -62,10 +62,16 @@ export default async function Filodiretto() {
                     key={esempio}
                     className="rounded-2xl border border-line bg-card/40 p-4 text-sm leading-relaxed text-fg-soft"
                   >
-                    <span aria-hidden className="mr-2 text-accent-soft">
+                    {/* Virgolette decorative: erano aperte e mai chiuse.
+                        Sono `aria-hidden` perché un lettore di schermo non
+                        deve annunciare due volte la punteggiatura. */}
+                    <span aria-hidden className="mr-1 text-accent-soft">
                       &ldquo;
                     </span>
                     {esempio}
+                    <span aria-hidden className="ml-1 text-accent-soft">
+                      &rdquo;
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -114,7 +120,7 @@ export default async function Filodiretto() {
                     rel="noopener noreferrer"
                     className="mt-auto inline-flex items-center justify-center gap-2 rounded-full border border-line mt-6 px-5 py-3 text-sm font-semibold text-fg transition-colors hover:bg-fg hover:text-surface"
                   >
-                    Richiedi l&rsquo;accesso
+                    Richiedi l&apos;accesso
                     <ArrowUpRight size={15} aria-hidden />
                   </a>
                 </div>

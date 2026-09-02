@@ -95,6 +95,20 @@ export default function ContactCTA() {
 
         <Reveal from="right" delay={120}>
           <form className="glass rounded-3xl p-7 sm:p-9">
+            {/*
+              Trappola antispam: un campo che gli umani non vedono e che i
+              robot compilano. Quando l'invio sarà attivo, una richiesta con
+              questo campo pieno si scarta senza rispondere. `aria-hidden` e
+              `tabIndex={-1}` lo tolgono anche a chi naviga da tastiera o con
+              un lettore di schermo — altrimenti sarebbe una trappola per
+              loro invece che per i robot. Lo stesso schema di
+              `ui/service-request.tsx`.
+            */}
+            <div className="hidden" aria-hidden>
+              <label htmlFor="cta-azienda">Non compilare questo campo</label>
+              <input id="cta-azienda" name="azienda" type="text" tabIndex={-1} autoComplete="off" />
+            </div>
+
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <label htmlFor="nome" className="mb-2 block text-xs font-medium text-fg-soft">
@@ -148,8 +162,21 @@ export default function ContactCTA() {
               </label>
             </div>
 
+            {/*
+              `type="button"` e non `type="submit"`, finché l'invio non esiste.
+
+              Non è pignoleria: un <form> senza `action` e senza `method` che
+              viene inviato fa una GET sulla pagina stessa, e i browser
+              accodano all'indirizzo tutti i campi compilati. Nome, email e
+              telefono finirebbero nella barra degli indirizzi, nella
+              cronologia, nei log del server e nel Referer verso terzi — un
+              dato personale esposto per un modulo che non fa niente.
+
+              Quando ci sarà il backend questo torna `type="submit"` e il form
+              prende una Server Action (o `action`/`method="post"`).
+            */}
             <div className="mt-7">
-              <ShinyButton type="submit">Invia la richiesta</ShinyButton>
+              <ShinyButton type="button">Invia la richiesta</ShinyButton>
             </div>
 
             <p className="mt-4 text-[11px] text-fg-faint">

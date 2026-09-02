@@ -1,4 +1,4 @@
-import { ArrowUpRight, BarChart3, Compass, Network, ShieldCheck } from "lucide-react";
+import { ArrowUpRight, BarChart3, Compass, LayoutDashboard, Network, ShieldCheck } from "lucide-react";
 import { softwareProducts } from "@/data/content";
 import SectionHeading from "@/components/ui/section-heading";
 import Reveal from "@/components/ui/reveal";
@@ -18,6 +18,7 @@ const icons = {
   shield: ShieldCheck,
   chart: BarChart3,
   compass: Compass,
+  dashboard: LayoutDashboard,
 } as const;
 
 export default function SoftwareShowcase() {
@@ -43,16 +44,22 @@ export default function SoftwareShowcase() {
         <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {softwareProducts.map((product, i) => {
             const Icon = icons[product.icon];
-            // Bento: la 1ª e la 4ª card occupano due colonne. Così le due
-            // righe risultano [larga | stretta] e [stretta | larga] invece di
-            // lasciare un buco nella griglia.
-            const featured = i === 0 || i === 3;
+            // Bento: solo la prima card occupa due colonne.
+            //
+            // Con quattro applicativi erano in evidenza la 1ª e la 4ª; da
+            // quando gli applicativi sono cinque quella regola lasciava
+            // l'ultima card sola in una riga vuota. Con una sola card larga
+            // i conti tornano su entrambi i formati: a due colonne la prima
+            // riempie una riga e le altre quattro fanno due righe piene; a
+            // tre colonne la prima più una riempiono la riga, e le tre
+            // rimanenti fanno la seconda.
+            const featured = i === 0;
 
             return (
               <Reveal
                 key={product.name}
                 delay={i * 100}
-                className={`h-full ${featured ? "lg:col-span-2" : ""}`}
+                className={`h-full ${featured ? "md:col-span-2 lg:col-span-2" : ""}`}
               >
                 <article className={`group glass relative flex h-full flex-col overflow-hidden rounded-3xl p-7 transition-all duration-300 hover:-translate-y-1 hover:tinta-bordo ${tinte[product.tint]}`}>
                   {/* Reticolo interno appena percettibile: dà "texture" alla
