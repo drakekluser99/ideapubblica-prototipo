@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
 
 /*
   Reveal — il mattone di tutti gli effetti di scroll del sito.
@@ -54,14 +54,10 @@ export function Reveal({
     const el = ref.current;
     if (!el) return;
 
-    const show = () => {
-      el.style.opacity = "1";
-      el.style.transform = "none";
-    };
-    const hide = () => {
-      el.style.opacity = "0";
-      el.style.transform = offsets[from];
-    };
+    // Non scriviamo colori o valori: mettiamo/togliamo un attributo, e il
+    // resto lo decide il CSS (`html.js .reveal:not([data-shown])`).
+    const show = () => el.setAttribute("data-shown", "");
+    const hide = () => el.removeAttribute("data-shown");
 
     // Se l'utente ha chiesto meno animazioni, mostriamo tutto subito.
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -90,13 +86,16 @@ export function Reveal({
   return (
     <div
       ref={ref}
-      className={className}
-      style={{
-        opacity: 0,
-        transform: offsets[from],
-        transition: `opacity 700ms cubic-bezier(0.22,1,0.36,1) ${delay}ms, transform 700ms cubic-bezier(0.22,1,0.36,1) ${delay}ms`,
-        willChange: "opacity, transform",
-      }}
+      className={`reveal ${className}`}
+      // Ritardo e direzione viaggiano come custom property CSS: il
+      // comportamento sta tutto nel foglio di stile, qui passiamo solo i due
+      // parametri che cambiano da un'istanza all'altra.
+      style={
+        {
+          "--reveal-delay": `${delay}ms`,
+          "--reveal-offset": offsets[from],
+        } as CSSProperties
+      }
     >
       {children}
     </div>
