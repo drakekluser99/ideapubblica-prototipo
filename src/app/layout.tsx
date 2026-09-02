@@ -20,14 +20,23 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         {/*
           Script inline, eseguito durante il parsing dell'HTML (quindi prima
-          del primo disegno): marca <html> con la classe "js". Le sezioni che
-          appaiono allo scroll partono invisibili SOLO se questa classe c'è.
-          Senza, il contenuto è visibile da subito — niente pagina bianca su
-          connessione lenta, e chi non esegue JavaScript legge comunque tutto.
+          del primo disegno). Fa due cose:
+
+          1. marca <html> con la classe "js": le sezioni che appaiono allo
+             scroll partono invisibili SOLO se questa classe c'è, così senza
+             JavaScript il contenuto resta comunque leggibile;
+          2. rilegge il tema salvato e lo applica subito. Deve stare qui,
+             inline e sincrono: se aspettassimo React, l'utente che ha scelto
+             il tema chiaro vedrebbe un lampo di pagina scura a ogni
+             caricamento. È il classico "flash of wrong theme".
+
+          Il try/catch serve perché localStorage lancia un'eccezione se i
+          cookie di sito sono bloccati: in quel caso si resta sul tema
+          predefinito invece di rompere la pagina.
         */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `document.documentElement.classList.add("js")`,
+            __html: `document.documentElement.classList.add("js");try{var t=localStorage.getItem("ip-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}`,
           }}
         />
       </head>

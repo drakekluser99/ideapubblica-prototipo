@@ -40,33 +40,32 @@ export default function Pillars() {
               <Reveal key={pillar.title} delay={i * 110} className="h-full">
                 <a
                   href={pillar.href}
-                  className="group glass relative flex h-full flex-col overflow-hidden rounded-3xl p-7 transition-all duration-300 hover:-translate-y-1 hover:border-brand-500/40"
+                  className="group glass relative flex h-full flex-col overflow-hidden rounded-3xl p-7 transition-all duration-300 hover:-translate-y-1 hover:border-accent/40"
                 >
                   {/* Alone che compare in hover: dà "vita" alla card senza
                       cambiarne il layout (quindi senza far saltare il testo). */}
                   <span
                     aria-hidden
-                    className="pointer-events-none absolute -top-24 -right-16 h-56 w-56 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
-                    style={{ background: "radial-gradient(circle, rgba(47,107,255,0.35), transparent 70%)" }}
+                    className="glow-a pointer-events-none absolute -top-24 -right-16 h-56 w-56 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
                   />
 
-                  <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-brand-500/12 text-brand-300">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-accent/12 text-accent-soft">
                     <Icon size={20} />
                   </span>
 
-                  <h3 className="display mt-6 text-2xl text-white">{pillar.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-mute">{pillar.description}</p>
+                  <h3 className="display mt-6 text-2xl text-fg">{pillar.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-fg-soft">{pillar.description}</p>
 
                   <ul className="mt-6 space-y-2.5">
                     {pillar.bullets.map((b) => (
-                      <li key={b} className="flex items-center gap-2.5 text-sm text-white/80">
-                        <Check size={14} className="shrink-0 text-acqua" />
+                      <li key={b} className="flex items-center gap-2.5 text-sm text-fg/80">
+                        <Check size={14} className="shrink-0 text-positive" />
                         {b}
                       </li>
                     ))}
                   </ul>
 
-                  <span className="mt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-300 transition-transform duration-300 group-hover:translate-x-1">
+                  <span className="mt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-accent-soft transition-transform duration-300 group-hover:translate-x-1">
                     Approfondisci
                     <ArrowUpRight size={16} />
                   </span>

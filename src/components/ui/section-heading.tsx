@@ -15,7 +15,7 @@ type SectionHeadingProps = {
   title: ReactNode;
   description?: ReactNode;
   align?: "left" | "center";
-  tone?: "dark" | "light";
+  tone?: "page" | "band";
   className?: string;
 };
 
@@ -24,7 +24,7 @@ export function SectionHeading({
   title,
   description,
   align = "left",
-  tone = "dark",
+  tone = "page",
   className = "",
 }: SectionHeadingProps) {
   const isCenter = align === "center";
@@ -35,7 +35,7 @@ export function SectionHeading({
         {eyebrow ? (
           <p
             className={`eyebrow mb-4 flex items-center gap-2 ${isCenter ? "justify-center" : ""} ${
-              tone === "dark" ? "text-brand-300" : "text-brand-600"
+              tone === "page" ? "text-accent-soft" : "text-band-accent"
             }`}
           >
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-current" />
@@ -45,7 +45,7 @@ export function SectionHeading({
 
         <h2
           className={`display text-[clamp(2rem,4.4vw,3.25rem)] ${
-            tone === "dark" ? "text-white" : "text-ink-950"
+            tone === "page" ? "text-fg" : "text-band-fg"
           }`}
         >
           {title}
@@ -54,7 +54,7 @@ export function SectionHeading({
         {description ? (
           <p
             className={`mt-5 text-base leading-relaxed sm:text-lg ${
-              tone === "dark" ? "text-mute" : "text-mute-ink"
+              tone === "page" ? "text-fg-soft" : "text-band-fg-soft"
             }`}
           >
             {description}

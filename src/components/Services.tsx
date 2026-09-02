@@ -17,11 +17,11 @@ import Reveal from "@/components/ui/reveal";
 */
 export default function Services() {
   return (
-    <section id="servizi" className="bg-paper py-24 text-ink-950 sm:py-32">
+    <section id="servizi" className="bg-band py-24 text-band-fg sm:py-32">
       <div className="shell">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <SectionHeading
-            tone="light"
+            tone="band"
             eyebrow="Servizi"
             title={
               <>
@@ -35,7 +35,7 @@ export default function Services() {
           <Reveal delay={120}>
             <a
               href="#contatti"
-              className="inline-flex items-center gap-2 rounded-full border border-ink-950/15 px-6 py-3 text-sm font-semibold text-ink-950 transition-colors hover:bg-ink-950 hover:text-white"
+              className="inline-flex items-center gap-2 rounded-full border border-band-line px-6 py-3 text-sm font-semibold text-band-fg transition-colors hover:bg-band-fg hover:text-band"
             >
               Richiedi una consulenza
               <ArrowUpRight size={16} />
@@ -43,33 +43,33 @@ export default function Services() {
           </Reveal>
         </div>
 
-        <ul className="mt-14 border-t border-ink-950/10">
+        <ul className="mt-14 border-t border-band-line">
           {services.map((service, i) => (
             <Reveal key={service.name} delay={i * 70}>
-              <li className="group border-b border-ink-950/10">
+              <li className="group border-b border-band-line">
                 <a
                   href="#contatti"
                   className="grid items-start gap-4 py-7 transition-colors sm:grid-cols-[3.5rem_1fr_auto] sm:gap-6"
                 >
                   {/* Numerazione: String(i+1).padStart(2,"0") dà 01, 02, ...
                       Piccolo dettaglio che rende la lista un "indice". */}
-                  <span className="display text-2xl text-ink-950/25 transition-colors group-hover:text-brand-600">
+                  <span className="display text-2xl text-band-fg/25 transition-colors group-hover:text-band-accent">
                     {String(i + 1).padStart(2, "0")}
                   </span>
 
                   <div>
                     <div className="flex flex-wrap items-center gap-3">
-                      <h3 className="display text-xl text-ink-950 sm:text-2xl">{service.name}</h3>
-                      <span className="rounded-full bg-brand-600/10 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-brand-700 uppercase">
+                      <h3 className="display text-xl text-band-fg sm:text-2xl">{service.name}</h3>
+                      <span className="rounded-full bg-band-accent/12 px-2.5 py-1 text-[11px] font-semibold tracking-wide text-band-accent uppercase">
                         {service.tag}
                       </span>
                     </div>
-                    <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-mute-ink">
+                    <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-band-fg-soft">
                       {service.description}
                     </p>
                   </div>
 
-                  <span className="hidden h-10 w-10 items-center justify-center rounded-full border border-ink-950/12 text-ink-950 transition-all duration-300 group-hover:border-brand-600 group-hover:bg-brand-600 group-hover:text-white sm:flex">
+                  <span className="hidden h-10 w-10 items-center justify-center rounded-full border border-band-line text-band-fg transition-all duration-300 group-hover:border-band-accent group-hover:bg-band-accent group-hover:text-band sm:flex">
                     <ArrowUpRight size={16} />
                   </span>
                 </a>

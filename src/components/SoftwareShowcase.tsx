@@ -24,8 +24,7 @@ export default function SoftwareShowcase() {
     <section id="software" className="relative overflow-hidden py-24 sm:py-32">
       <div
         aria-hidden
-        className="pointer-events-none absolute top-1/3 left-1/2 -z-10 h-[30rem] w-[46rem] -translate-x-1/2 rounded-full blur-3xl"
-        style={{ background: "radial-gradient(circle, rgba(47,107,255,0.16), transparent 70%)" }}
+        className="glow-a pointer-events-none absolute top-1/3 left-1/2 -z-10 h-[30rem] w-[46rem] -translate-x-1/2 rounded-full blur-3xl"
       />
 
       <div className="shell">
@@ -54,23 +53,23 @@ export default function SoftwareShowcase() {
                 delay={i * 100}
                 className={`h-full ${featured ? "lg:col-span-2" : ""}`}
               >
-                <article className="group glass relative flex h-full flex-col overflow-hidden rounded-3xl p-7 transition-all duration-300 hover:-translate-y-1 hover:border-brand-500/40">
+                <article className="group glass relative flex h-full flex-col overflow-hidden rounded-3xl p-7 transition-all duration-300 hover:-translate-y-1 hover:border-accent/40">
                   {/* Reticolo interno appena percettibile: dà "texture" alla
                       card e la fa sembrare una superficie, non un rettangolo. */}
                   <span aria-hidden className="grid-bg pointer-events-none absolute inset-0 opacity-40" />
 
                   <div className="relative flex items-start justify-between gap-4">
-                    <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-brand-500/12 text-brand-300">
+                    <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-accent/12 text-accent-soft">
                       <Icon size={20} />
                     </span>
-                    <span className="rounded-full border border-white/10 px-2.5 py-1 text-[11px] font-medium text-mute">
+                    <span className="rounded-full border border-line px-2.5 py-1 text-[11px] font-medium text-fg-soft">
                       Applicativo
                     </span>
                   </div>
 
-                  <h3 className="display relative mt-6 text-2xl text-white">{product.name}</h3>
+                  <h3 className="display relative mt-6 text-2xl text-fg">{product.name}</h3>
                   <p
-                    className={`relative mt-3 text-sm leading-relaxed text-mute ${
+                    className={`relative mt-3 text-sm leading-relaxed text-fg-soft ${
                       featured ? "max-w-xl" : ""
                     }`}
                   >
@@ -83,7 +82,7 @@ export default function SoftwareShowcase() {
                     {product.features.map((f) => (
                       <li
                         key={f}
-                        className="rounded-lg border border-white/8 bg-white/[0.03] px-3 py-1.5 text-xs text-white/75"
+                        className="rounded-lg border border-line bg-fg/[0.03] px-3 py-1.5 text-xs text-fg/75"
                       >
                         {f}
                       </li>
@@ -92,7 +91,7 @@ export default function SoftwareShowcase() {
 
                   <a
                     href="#contatti"
-                    className="relative mt-auto inline-flex items-center gap-1.5 pt-7 text-sm font-semibold text-brand-300 transition-transform duration-300 group-hover:translate-x-1"
+                    className="relative mt-auto inline-flex items-center gap-1.5 pt-7 text-sm font-semibold text-accent-soft transition-transform duration-300 group-hover:translate-x-1"
                   >
                     Richiedi una demo
                     <ArrowUpRight size={16} />

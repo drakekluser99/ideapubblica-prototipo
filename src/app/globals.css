@@ -2,7 +2,7 @@
 
 /* -------------------------------------------------------------------------
    FONT
-   I font non arrivano più da Google al momento della build: i pacchetti
+   I font non arrivano da Google al momento della build: i pacchetti
    @fontsource-variable installano i file .woff2 dentro node_modules e li
    importiamo da qui. Vantaggi: la build funziona ovunque (anche offline),
    nessuna richiesta di rete verso Google quando l'utente apre il sito
@@ -12,15 +12,14 @@
 @import "@fontsource-variable/instrument-sans/wght.css";
 @import "@fontsource-variable/inter/wght.css";
 
-/* -------------------------------------------------------------------------
-   DESIGN TOKEN
-   Qui vive la direzione grafica. Ogni colore/spaziatura usata nei componenti
-   deve passare da un token: se domani il cliente cambia il blu, si cambia
-   una riga qui e cambia tutto il sito.
-   ------------------------------------------------------------------------- */
+/* =========================================================================
+   1. PALETTE GREZZA
+   I colori "fisici" del progetto. Non vanno quasi mai usati direttamente nei
+   componenti: servono a comporre i token semantici del blocco 2.
+   ========================================================================= */
 @theme {
-  /* Fondali scuri: blu notte, mai nero puro — il nero puro su schermo
-     sembra "spento", un blu molto desaturato resta profondo ma vivo. */
+  /* Fondali scuri: blu notte, mai nero puro — il nero puro su schermo sembra
+     spento, un blu molto desaturato resta profondo ma vivo. */
   --color-ink-950: #05070f;
   --color-ink-900: #080c18;
   --color-ink-850: #0b1120;
@@ -28,24 +27,19 @@
   --color-ink-700: #17243d;
 
   /* Blu di marca: eredita l'identità istituzionale ma più elettrico. */
+  --color-brand-800: #10307f;
   --color-brand-700: #1740b8;
   --color-brand-600: #1d55e0;
   --color-brand-500: #2f6bff;
   --color-brand-400: #5b8cff;
   --color-brand-300: #93b4ff;
   --color-brand-200: #c7d8ff;
+  --color-brand-100: #e6edff;
 
   /* Accenti ereditati dalla palette attuale, usati con parsimonia. */
   --color-acqua: #2ed3b7;
+  --color-acqua-scuro: #0e9e88;
   --color-ambra: #ffc24b;
-
-  /* Sezioni chiare: non bianco puro, un grigio-azzurro riposante. */
-  --color-paper: #f3f6fc;
-  --color-paper-soft: #e8edf7;
-
-  /* Testi */
-  --color-mute: #8fa0bd; /* testo secondario su fondo scuro */
-  --color-mute-ink: #56637d; /* testo secondario su fondo chiaro */
 
   --font-display: "Instrument Sans Variable", "Instrument Sans", system-ui, sans-serif;
   --font-sans: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -54,8 +48,140 @@
   --spacing-shell: 76rem;
 }
 
+/* =========================================================================
+   2. TOKEN SEMANTICI
+   Questi non dicono "che colore è" ma "a cosa serve": superficie, testo,
+   bordo, accento. È la differenza fra `bg-ink-950` e `bg-surface`.
+
+   Perché conta: `bg-ink-950` è una promessa sbagliata — dice "questo sfondo
+   è blu notte", e nel tema chiaro diventa falsa. `bg-surface` dice "questo è
+   lo sfondo della pagina", e resta vera in entrambi i temi. Da qui in poi i
+   componenti usano SOLO questi.
+
+   `@theme inline` è la parte che rende possibile il cambio a runtime: dice a
+   Tailwind di generare `background-color: var(--surface)` invece di copiarci
+   dentro il valore. Cambiando `--surface` sotto `[data-theme]`, cambia tutto
+   il sito senza rigenerare una riga di CSS.
+   ========================================================================= */
+@theme inline {
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-card: var(--card);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-fg: var(--fg);
+  --color-fg-soft: var(--fg-soft);
+  --color-fg-faint: var(--fg-faint);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-ink: var(--accent-ink);
+  /* "band" = la sezione a registro invertito rispetto al resto della pagina:
+     chiara dentro un sito scuro, scura dentro un sito chiaro. */
+  --color-band: var(--band);
+  --color-band-fg: var(--band-fg);
+  --color-band-fg-soft: var(--band-fg-soft);
+  --color-band-line: var(--band-line);
+  --color-band-accent: var(--band-accent);
+  --color-positive: var(--positive);
+}
+
+/* --- Tema scuro (predefinito) --- */
 :root {
   color-scheme: dark;
+
+  --surface: #05070f;
+  --surface-2: #080c18;
+  --card: rgb(16 26 46 / 0.7);
+  --line: rgb(255 255 255 / 0.08);
+  --line-strong: rgb(255 255 255 / 0.16);
+  --fg: #eef2fb;
+  --fg-soft: #8fa0bd;
+  --fg-faint: #63718c;
+  --accent: #2f6bff;
+  --accent-soft: #93b4ff;
+  --accent-ink: #ffffff;
+
+  --band: #f3f6fc;
+  --band-fg: #05070f;
+  --band-fg-soft: #56637d;
+  --band-line: rgb(5 7 15 / 0.1);
+  /* La fascia è chiara: il suo accento è il blu scuro, come nel tema chiaro. */
+  --band-accent: #1d55e0;
+  --positive: #2ed3b7;
+
+  /* Colori del marchio: la "versione negativa" per fondo scuro. */
+  --logo-idea: #ffffff;
+  --logo-pubblica: #5b8cff;
+  --logo-payoff: #93b4ff;
+  --logo-stop-1: #1d55e0;
+  --logo-stop-2: #2364ee;
+  --logo-stop-3: #2f6bff;
+  --logo-stop-4: #4b80ff;
+  --logo-stop-5: #5b8cff;
+
+  --grid-line: rgb(255 255 255 / 0.045);
+  --glow-a: rgb(47 107 255 / 0.22);
+  --glow-b: rgb(46 211 183 / 0.14);
+  --card-shadow: none;
+  --gradient-text: linear-gradient(100deg, #93b4ff, #2f6bff 45%, #2ed3b7);
+
+  --cta-bg: #0b1120;
+  --cta-fg: #ffffff;
+  --cta-edge: #2f6bff;
+  --cta-edge-soft: #93b4ff;
+  --cta-inner: #17243d;
+}
+
+/* --- Tema chiaro --- */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --surface: #ffffff;
+  --surface-2: #f4f7fc;
+  --card: #ffffff;
+  --line: #e3e9f4;
+  --line-strong: #cfd9ec;
+  --fg: #0b1424;
+  --fg-soft: #55637c;
+  --fg-faint: #8a95a8;
+  /* Sul bianco il blu va scurito, altrimenti il testo piccolo non raggiunge
+     il contrasto minimo AA (4.5:1). */
+  --accent: #1d55e0;
+  --accent-soft: #1740b8;
+  --accent-ink: #ffffff;
+
+  --band: #0b1120;
+  --band-fg: #ffffff;
+  --band-fg-soft: #8fa0bd;
+  --band-line: rgb(255 255 255 / 0.1);
+  /* La fascia è scura: il suo accento è il blu elettrico. */
+  --band-accent: #5b8cff;
+  /* Sul bianco l'acqua chiara sparisce: si scurisce per restare leggibile. */
+  --positive: #0e9e88;
+
+  /* Colori ufficiali del marchio, pensati proprio per il fondo chiaro. */
+  --logo-idea: #897974;
+  --logo-pubblica: #005fa8;
+  --logo-payoff: #005fa8;
+  --logo-stop-1: #143a84;
+  --logo-stop-2: #004790;
+  --logo-stop-3: #00549d;
+  --logo-stop-4: #005ca5;
+  --logo-stop-5: #005fa8;
+
+  --grid-line: rgb(11 20 36 / 0.05);
+  --glow-a: rgb(47 107 255 / 0.12);
+  --glow-b: rgb(46 211 183 / 0.1);
+  /* Sul chiaro le card non possono contare sul contrasto di luminosità:
+     serve un'ombra morbida per staccarle dal fondo. */
+  --card-shadow: 0 1px 2px rgb(11 20 36 / 0.04), 0 8px 24px -12px rgb(11 20 36 / 0.12);
+  --gradient-text: linear-gradient(100deg, #1740b8, #1d55e0 45%, #0e9e88);
+
+  --cta-bg: #1d55e0;
+  --cta-fg: #ffffff;
+  --cta-edge: #93b4ff;
+  --cta-edge-soft: #ffffff;
+  --cta-inner: rgb(255 255 255 / 0.25);
 }
 
 html {
@@ -65,22 +191,22 @@ html {
 }
 
 body {
-  background-color: var(--color-ink-950);
-  color: #eef2fb;
+  background-color: var(--surface);
+  color: var(--fg);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background-color: var(--color-brand-500);
-  color: white;
+  background-color: var(--accent);
+  color: var(--accent-ink);
 }
 
-/* -------------------------------------------------------------------------
-   UTILITY DI PROGETTO
+/* =========================================================================
+   3. UTILITY DI PROGETTO
    @utility è la sintassi di Tailwind 4 per aggiungere classi proprie:
    diventano utilizzabili nel JSX esattamente come quelle native.
-   ------------------------------------------------------------------------- */
+   ========================================================================= */
 
 /* Contenitore standard: stessa gabbia orizzontale in tutte le sezioni. */
 @utility shell {
@@ -107,46 +233,66 @@ body {
   text-transform: uppercase;
 }
 
-/* Vetro: superficie delle card sui fondi scuri. */
+/* Superficie delle card. Nel tema scuro è "vetro" (semitrasparente e
+   sfocato), nel chiaro è una superficie piena con un'ombra morbida: sul
+   bianco il vetro non si distinguerebbe dal fondo. */
 @utility glass {
-  background-color: color-mix(in srgb, var(--color-ink-800) 70%, transparent);
-  border: 1px solid rgb(255 255 255 / 0.08);
+  background-color: var(--card);
+  border: 1px solid var(--line);
   backdrop-filter: blur(12px);
+  box-shadow: var(--card-shadow);
 }
 
-/* Reticolo tecnico di sfondo: richiama i dati/le griglie senza immagini. */
+/* Reticolo tecnico di sfondo: richiama i dati e le griglie senza immagini. */
 @utility grid-bg {
   background-image:
-    linear-gradient(to right, rgb(255 255 255 / 0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(255 255 255 / 0.045) 1px, transparent 1px);
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
   background-size: 68px 68px;
+}
+
+/* Aloni luminosi di sfondo. Erano scritti a mano dentro ogni sezione con
+   valori rgba fissi: raccolti qui cambiano da soli insieme al tema. */
+@utility glow-a {
+  background: radial-gradient(circle, var(--glow-a), transparent 70%);
+}
+
+@utility glow-b {
+  background: radial-gradient(circle, var(--glow-b), transparent 70%);
 }
 
 /* Testo in gradiente per la parola-chiave dei titoli. */
 @utility text-gradient {
-  background-image: linear-gradient(
-    100deg,
-    var(--color-brand-300),
-    var(--color-brand-500) 45%,
-    var(--color-acqua)
-  );
+  background-image: var(--gradient-text);
   background-clip: text;
   color: transparent;
 }
 
-/* -------------------------------------------------------------------------
-   REVEAL (apparizione allo scroll)
+/* Selettore del tema: le due icone sono entrambe nel DOM, il CSS mostra
+   quella giusta leggendo lo stesso attributo che governa i colori. Così il
+   bottone non ha bisogno di stato React e non può disallinearsi. */
+.theme-toggle .icon-moon {
+  display: none;
+}
+:root[data-theme="light"] .theme-toggle .icon-sun {
+  display: none;
+}
+:root[data-theme="light"] .theme-toggle .icon-moon {
+  display: block;
+}
+
+/* =========================================================================
+   4. REVEAL (apparizione allo scroll)
 
    Il punto delicato: se l'elemento nasce con opacity:0 scritto nel markup,
    resta invisibile finché JavaScript non parte. Su una connessione lenta si
    vede la pagina vuota per qualche decimo di secondo, e chi legge la pagina
-   senza eseguire JS (alcuni crawler, lettori di contenuti) non vede nulla.
+   senza eseguire JS (alcuni crawler) non vede nulla.
 
    Soluzione: l'opacity:0 vale SOLO se `html` ha la classe `js`, aggiunta da
    uno script inline in layout.tsx che gira durante il parsing dell'HTML,
-   prima del primo disegno. Se JS è disabilitato o non è ancora arrivato,
-   la classe non c'è e il contenuto è semplicemente visibile.
-   ------------------------------------------------------------------------- */
+   prima del primo disegno.
+   ========================================================================= */
 .reveal {
   transition:
     opacity 700ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms),
@@ -159,8 +305,8 @@ html.js .reveal:not([data-shown]) {
   transform: var(--reveal-offset, translateY(28px));
 }
 
-/* -------------------------------------------------------------------------
-   SHINY CTA — il bottone con il bordo luminoso
+/* =========================================================================
+   5. SHINY CTA — il bottone con il bordo luminoso
 
    Come funziona: il bottone ha DUE sfondi sovrapposti. Uno pieno che si ferma
    al `padding-box`, e sotto un `conic-gradient` che arriva fino al
@@ -170,12 +316,11 @@ html.js .reveal:not([data-shown]) {
    che quella variabile è un <angle>, così può interpolarla in un'animazione.
    Senza @property, le custom property non sono animabili.
 
-   Perché sta qui e non in un <style jsx> dentro al componente: styled-jsx
-   inietta il CSS solo quando React idrata la pagina, quindi nell'HTML
-   servito dal server quelle regole non ci sono e per un istante il bottone
-   appare come testo nudo. Da un foglio di stile globale, invece, lo stile
-   arriva con la pagina.
-   ------------------------------------------------------------------------- */
+   Rispetto allo snippet di partenza sono stati tolti i due pseudo-elementi
+   interni (la trama a puntini e il riflesso rotante): quest'ultimo era un
+   quadrato con `aspect-ratio: 1`, e ruotando mostrava i propri angoli dentro
+   alla pillola. L'effetto resta dove serve, sul bordo.
+   ========================================================================= */
 @property --gradient-angle {
   syntax: "<angle>";
   initial-value: 0deg;
@@ -198,22 +343,17 @@ html.js .reveal:not([data-shown]) {
 }
 
 .shiny-cta {
-  --shiny-cta-bg: #0b1120;
-  --shiny-cta-bg-subtle: #17243d;
-  --shiny-cta-fg: #ffffff;
-  --shiny-cta-highlight: #2f6bff;
-  --shiny-cta-highlight-subtle: #93b4ff;
-  --animation: gradient-angle linear infinite;
+  --shiny-cta-bg: var(--cta-bg);
+  --shiny-cta-fg: var(--cta-fg);
+  --shiny-cta-highlight: var(--cta-edge);
+  --shiny-cta-highlight-subtle: var(--cta-edge-soft);
   --duration: 3s;
-  --shadow-size: 2px;
   --transition: 800ms cubic-bezier(0.25, 1, 0.5, 1);
 
-  isolation: isolate;
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
   cursor: pointer;
   outline-offset: 4px;
   padding: 0.95rem 1.9rem;
@@ -236,120 +376,40 @@ html.js .reveal:not([data-shown]) {
         transparent calc(var(--gradient-percent) * 4)
       )
       border-box;
-  box-shadow: inset 0 0 0 1px var(--shiny-cta-bg-subtle);
-  transition: var(--transition);
-  transition-property: --gradient-angle-offset, --gradient-percent, --gradient-shine;
+  box-shadow: inset 0 0 0 1px var(--cta-inner);
+  animation: gradient-angle var(--duration) linear infinite;
+  transition:
+    var(--transition),
+    translate 120ms ease;
+  transition-property: --gradient-angle-offset, --gradient-percent, --gradient-shine, translate;
 }
 
 /* Variante "muta": stesso meccanismo, superficie quasi invisibile. */
 .shiny-cta--ghost {
-  --shiny-cta-bg: rgba(255, 255, 255, 0.03);
-  --shiny-cta-bg-subtle: rgba(255, 255, 255, 0.12);
-  --shiny-cta-highlight: rgba(147, 180, 255, 0.5);
-  --shiny-cta-highlight-subtle: rgba(255, 255, 255, 0.7);
+  --shiny-cta-bg: transparent;
+  --shiny-cta-fg: var(--fg);
+  --shiny-cta-highlight: var(--line-strong);
+  --shiny-cta-highlight-subtle: var(--accent-soft);
   font-weight: 500;
+  box-shadow: inset 0 0 0 1px var(--line);
 }
 
-.shiny-cta--ghost::after {
-  opacity: 0.18;
-}
-
-.shiny-cta::before,
-.shiny-cta::after,
-.shiny-cta span::before {
-  content: "";
-  pointer-events: none;
-  position: absolute;
-  inset-inline-start: 50%;
-  inset-block-start: 50%;
-  translate: -50% -50%;
-  z-index: -1;
-}
-
-.shiny-cta:active {
-  translate: 0 1px;
-}
-
-/* Trama a puntini interna (richiama i "pallini connessi" del logo). */
-.shiny-cta::before {
-  --size: calc(100% - var(--shadow-size) * 3);
-  --position: 2px;
-  --space: calc(var(--position) * 2);
-  width: var(--size);
-  height: var(--size);
-  background: radial-gradient(
-      circle at var(--position) var(--position),
-      white calc(var(--position) / 4),
-      transparent 0
-    )
-    padding-box;
-  background-size: var(--space) var(--space);
-  background-repeat: space;
-  mask-image: conic-gradient(
-    from calc(var(--gradient-angle) + 45deg),
-    black,
-    transparent 10% 90%,
-    black
-  );
-  border-radius: inherit;
-  opacity: 0.4;
-  z-index: -1;
-}
-
-/* Riflesso che ruota dentro al bottone. */
-.shiny-cta::after {
-  --animation: shimmer linear infinite;
-  width: 100%;
-  aspect-ratio: 1;
-  background: linear-gradient(-50deg, transparent, var(--shiny-cta-highlight), transparent);
-  mask-image: radial-gradient(circle at bottom, transparent 40%, black);
-  opacity: 0.6;
-}
-
-/* Lo <span> interno è una riga flessibile: senza, un'icona messa accanto al
-   testo andrebbe a capo invece di allinearsi. */
 .shiny-cta span {
-  position: relative;
-  z-index: 1;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   white-space: nowrap;
 }
 
-.shiny-cta span::before {
-  --size: calc(100% + 1rem);
-  width: var(--size);
-  height: var(--size);
-  box-shadow: inset 0 -1ex 2rem 4px var(--shiny-cta-highlight);
-  opacity: 0;
-  transition: opacity var(--transition);
-  animation: calc(var(--duration) * 1.5) breathe linear infinite;
+.shiny-cta:active {
+  translate: 0 1px;
 }
 
-.shiny-cta,
-.shiny-cta::before,
-.shiny-cta::after {
-  animation:
-    var(--animation) var(--duration),
-    var(--animation) calc(var(--duration) / 0.4) reverse paused;
-  animation-composition: add;
-}
-
+/* In hover il tratto luminoso si allarga e schiarisce. */
 .shiny-cta:is(:hover, :focus-visible) {
-  --gradient-percent: 20%;
+  --gradient-percent: 22%;
   --gradient-angle-offset: 95deg;
   --gradient-shine: var(--shiny-cta-highlight-subtle);
-}
-
-.shiny-cta:is(:hover, :focus-visible),
-.shiny-cta:is(:hover, :focus-visible)::before,
-.shiny-cta:is(:hover, :focus-visible)::after {
-  animation-play-state: running;
-}
-
-.shiny-cta:is(:hover, :focus-visible) span::before {
-  opacity: 1;
 }
 
 @keyframes gradient-angle {
@@ -357,25 +417,10 @@ html.js .reveal:not([data-shown]) {
     --gradient-angle: 360deg;
   }
 }
-@keyframes shimmer {
-  to {
-    rotate: 360deg;
-  }
-}
-@keyframes breathe {
-  from,
-  to {
-    scale: 1;
-  }
-  50% {
-    scale: 1.2;
-  }
-}
 
-/* -------------------------------------------------------------------------
-   ANIMAZIONI
-   Definite una volta sola qui e richiamate dai componenti.
-   ------------------------------------------------------------------------- */
+/* =========================================================================
+   6. ANIMAZIONI CONDIVISE
+   ========================================================================= */
 @keyframes float-slow {
   0%,
   100% {
@@ -402,21 +447,18 @@ html.js .reveal:not([data-shown]) {
     opacity: 0.55;
     transform: scale(0.85);
   }
-  70% {
-    opacity: 0;
-    transform: scale(1.35);
-  }
+  70%,
   100% {
     opacity: 0;
     transform: scale(1.35);
   }
 }
 
-/* -------------------------------------------------------------------------
-   ACCESSIBILITÀ
-   Chi ha attivato "riduci animazioni" nel sistema operativo non deve
-   subire movimento. Regola non negoziabile: costa tre righe.
-   ------------------------------------------------------------------------- */
+/* =========================================================================
+   7. ACCESSIBILITÀ
+   Chi ha attivato "riduci animazioni" nel sistema operativo non deve subire
+   movimento. Regola non negoziabile: costa tre righe.
+   ========================================================================= */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

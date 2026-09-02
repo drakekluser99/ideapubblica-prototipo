@@ -21,28 +21,28 @@ export function NetworkVisual({ className = "" }: { className?: string }) {
   });
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative text-fg-soft ${className}`}>
       {/* Alone luminoso dietro alla rete. */}
       <div
         aria-hidden
         className="absolute inset-0 -z-10 rounded-full blur-3xl"
         style={{
           background:
-            "radial-gradient(circle at 50% 45%, rgba(47,107,255,0.38), rgba(46,211,183,0.12) 45%, transparent 70%)",
+            "radial-gradient(circle at 50% 45%, var(--glow-a), var(--glow-b) 45%, transparent 70%)",
         }}
       />
 
       <svg viewBox="0 0 320 320" className="h-full w-full" aria-hidden focusable="false">
         <defs>
           <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#5b8cff" stopOpacity="0.75" />
-            <stop offset="100%" stopColor="#2ed3b7" stopOpacity="0.25" />
+            <stop offset="0%" stopColor="var(--accent-soft)" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="var(--positive)" stopOpacity="0.35" />
           </linearGradient>
         </defs>
 
         {/* Cerchi concentrici: danno profondità e ricordano un radar. */}
         {[70, 112, 150].map((r) => (
-          <circle key={r} cx="160" cy="160" r={r} fill="none" stroke="white" strokeOpacity="0.07" />
+          <circle key={r} cx="160" cy="160" r={r} fill="none" stroke="currentColor" strokeOpacity="0.12" />
         ))}
 
         {/* Collegamenti nodo centrale ↔ nodi periferici. */}
@@ -56,7 +56,7 @@ export function NetworkVisual({ className = "" }: { className?: string }) {
           cy="160"
           r="34"
           fill="none"
-          stroke="#2f6bff"
+          stroke="var(--accent)"
           strokeWidth="1.5"
           style={{ animation: "pulse-ring 3.2s ease-out infinite", transformOrigin: "160px 160px" }}
         />
@@ -65,7 +65,7 @@ export function NetworkVisual({ className = "" }: { className?: string }) {
           cy="160"
           r="34"
           fill="none"
-          stroke="#2ed3b7"
+          stroke="var(--positive)"
           strokeWidth="1.5"
           style={{ animation: "pulse-ring 3.2s ease-out 1.6s infinite", transformOrigin: "160px 160px" }}
         />
@@ -76,14 +76,14 @@ export function NetworkVisual({ className = "" }: { className?: string }) {
             cx={n.x}
             cy={n.y}
             r={n.r}
-            fill={i % 3 === 0 ? "#2ed3b7" : "#5b8cff"}
+            fill={i % 3 === 0 ? "var(--positive)" : "var(--accent)"}
             fillOpacity={i % 2 === 0 ? 0.95 : 0.6}
             style={{ animation: `float-slow ${5 + i * 0.4}s ease-in-out ${n.delay}s infinite` }}
           />
         ))}
 
-        <circle cx="160" cy="160" r="17" fill="#0b1120" stroke="#2f6bff" strokeWidth="1.5" />
-        <circle cx="160" cy="160" r="6" fill="#93b4ff" />
+        <circle cx="160" cy="160" r="17" fill="var(--surface)" stroke="var(--accent)" strokeWidth="1.5" />
+        <circle cx="160" cy="160" r="6" fill="var(--accent-soft)" />
       </svg>
     </div>
   );

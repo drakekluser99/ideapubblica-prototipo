@@ -5,6 +5,7 @@ import { Menu, X } from "lucide-react";
 import { nav } from "@/data/content";
 import ShinyButton from "@/components/ui/shiny-button";
 import Logo from "@/components/ui/logo";
+import ThemeToggle from "@/components/ui/theme-toggle";
 
 /*
   Header sticky con due stati.
@@ -43,17 +44,22 @@ export default function Header() {
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "border-b border-white/8 bg-ink-950/80 backdrop-blur-xl"
+          ? "border-b border-line bg-surface/80 backdrop-blur-xl"
           : "border-b border-transparent bg-transparent"
       }`}
     >
-      <div className={`shell flex items-center justify-between transition-all duration-300 ${scrolled ? "h-16" : "h-20"}`}>
+      <div
+        className={`shell flex items-center justify-between transition-all duration-300 ${scrolled ? "h-16" : "h-20"}`}
+      >
         {/* Il logo è già l'etichetta del link, quindi l'SVG viene nascosto
             ai lettori di schermo (aria-hidden) e il nome lo dà l'anchor:
             altrimenti verrebbe annunciato due volte. */}
-        <a href="#top" className="flex items-center" aria-label="Ideapubblica, torna in cima">
+        <a
+          href="#top"
+          className="flex items-center"
+          aria-label="Ideapubblica, torna in cima"
+        >
           <Logo
-            tone="onDark"
             gradientId="ip-logo-header"
             withPayoff={false}
             aria-hidden
@@ -65,49 +71,59 @@ export default function Header() {
           />
         </a>
 
-        <nav className="hidden items-center gap-1 lg:flex" aria-label="Navigazione principale">
+        <nav
+          className="hidden items-center gap-1 lg:flex"
+          aria-label="Navigazione principale"
+        >
           {nav.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              className="relative rounded-full px-4 py-2 text-sm font-medium text-mute transition-colors hover:text-white focus-visible:text-white"
+              className="relative rounded-full px-4 py-2 text-sm font-medium text-fg-soft transition-colors hover:text-fg focus-visible:text-fg"
             >
               {item.label}
             </a>
           ))}
         </nav>
 
-        <div className="hidden lg:block">
+        <div className="hidden items-center gap-3 lg:flex">
+          <ThemeToggle />
           <ShinyButton href="#contatti" className="!px-6 !py-3 !text-sm">
             Contattaci
           </ShinyButton>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-white lg:hidden"
-          aria-label={open ? "Chiudi il menu" : "Apri il menu"}
-          aria-expanded={open}
-        >
-          {open ? <X size={18} /> : <Menu size={18} />}
-        </button>
+        <div className="flex items-center gap-2 lg:hidden">
+          <ThemeToggle />
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-fg"
+            aria-label={open ? "Chiudi il menu" : "Apri il menu"}
+            aria-expanded={open}
+          >
+            {open ? <X size={18} /> : <Menu size={18} />}
+          </button>
+        </div>
       </div>
 
       {/* Pannello mobile: reso sempre nel DOM ma con altezza 0 quando chiuso,
           così la transizione è animabile. */}
       <div
-        className={`overflow-hidden border-t border-white/8 bg-ink-950/95 backdrop-blur-xl transition-[max-height,opacity] duration-300 lg:hidden ${
+        className={`overflow-hidden border-t border-line bg-surface/95 backdrop-blur-xl transition-[max-height,opacity] duration-300 lg:hidden ${
           open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <nav className="shell flex flex-col gap-1 py-5" aria-label="Navigazione mobile">
+        <nav
+          className="shell flex flex-col gap-1 py-5"
+          aria-label="Navigazione mobile"
+        >
           {nav.map((item) => (
             <a
               key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
-              className="rounded-xl px-3 py-3 text-base font-medium text-mute transition-colors hover:bg-white/5 hover:text-white"
+              className="rounded-xl px-3 py-3 text-base font-medium text-fg-soft transition-colors hover:bg-fg/5 hover:text-fg"
             >
               {item.label}
             </a>
@@ -115,7 +131,7 @@ export default function Header() {
           <a
             href="#contatti"
             onClick={() => setOpen(false)}
-            className="mt-2 rounded-full bg-brand-500 px-5 py-3 text-center text-sm font-semibold text-white"
+            className="mt-2 rounded-full bg-accent px-5 py-3 text-center text-sm font-semibold text-accent-ink"
           >
             Contattaci
           </a>

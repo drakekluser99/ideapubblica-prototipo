@@ -9,13 +9,18 @@ import type { SVGProps } from "react";
   "DENOMINATORE COMUNE".
 
   Perché serve dividerli: i colori ufficiali (blu #005FA8 e grigio-talpa
-  #897974) sono pensati per fondo chiaro. Su un sito a fondo scuro come questo
-  risulterebbero spenti e a basso contrasto. Quindi il componente ha due
-  versioni — è la stessa cosa che ogni manuale d'immagine coordinata chiama
-  "versione positiva" e "versione negativa" del marchio:
+  #897974) sono pensati per fondo chiaro. Su fondo scuro risulterebbero spenti
+  e a basso contrasto, quindi serve anche la "versione negativa" — la stessa
+  distinzione che ogni manuale d'immagine coordinata chiama positivo/negativo.
+
+  Di default (tone="auto") i colori arrivano dalle variabili CSS --logo-*
+  definite in globals.css, che cambiano insieme al tema del sito: il marchio
+  si adatta da solo quando l'utente passa da chiaro a scuro, senza che questo
+  componente sappia nulla del tema. Le due varianti esplicite restano
+  disponibili per i casi fissi (un PDF, un'email, una sezione sempre scura):
 
     tone="brand"  → colori ufficiali esatti, per fondi chiari
-    tone="onDark" → versione negativa: testo bianco, blu schiarito
+    tone="onDark" → versione negativa, per fondi scuri
 
   Da far validare al cliente prima della pubblicazione: la versione negativa
   è una nostra proposta, non un file fornito da loro.
@@ -24,9 +29,22 @@ import type { SVGProps } from "react";
   pagina sono HTML non valido. Header e footer passano quindi un id diverso.
 */
 
-type Tone = "brand" | "onDark";
+type Tone = "auto" | "brand" | "onDark";
 
 const palette: Record<Tone, { idea: string; pubblica: string; payoff: string; stops: string[] }> = {
+  // Segue il tema del sito tramite le variabili CSS.
+  auto: {
+    idea: "var(--logo-idea)",
+    pubblica: "var(--logo-pubblica)",
+    payoff: "var(--logo-payoff)",
+    stops: [
+      "var(--logo-stop-1)",
+      "var(--logo-stop-2)",
+      "var(--logo-stop-3)",
+      "var(--logo-stop-4)",
+      "var(--logo-stop-5)",
+    ],
+  },
   // Colori ufficiali del marchio.
   brand: {
     idea: "#897974",
@@ -54,7 +72,7 @@ type LogoProps = SVGProps<SVGSVGElement> & {
 };
 
 export function Logo({
-  tone = "onDark",
+  tone = "auto",
   gradientId = "ip-logo-gradient",
   withPayoff = true,
   ...props
@@ -100,7 +118,7 @@ export function Logo({
   la parola (icona del menu mobile, favicon, elenchi).
 */
 export function LogoMark({
-  tone = "onDark",
+  tone = "auto",
   gradientId = "ip-mark-gradient",
   ...props
 }: Omit<LogoProps, "withPayoff">) {

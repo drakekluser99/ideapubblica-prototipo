@@ -27,24 +27,22 @@ export default function Hero() {
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-30 grid-bg opacity-70" />
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-40 left-1/2 -z-20 h-[36rem] w-[52rem] -translate-x-1/2 rounded-full blur-3xl"
-        style={{ background: "radial-gradient(circle, rgba(47,107,255,0.22), transparent 68%)" }}
+        className="glow-a pointer-events-none absolute -top-40 left-1/2 -z-20 h-[36rem] w-[52rem] -translate-x-1/2 rounded-full blur-3xl"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -bottom-24 -left-24 -z-20 h-96 w-96 rounded-full blur-3xl"
-        style={{ background: "radial-gradient(circle, rgba(46,211,183,0.14), transparent 70%)" }}
+        className="glow-b pointer-events-none absolute -bottom-24 -left-24 -z-20 h-96 w-96 rounded-full blur-3xl"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-b from-transparent to-ink-950"
+        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-b from-transparent to-surface"
       />
 
       <div className="shell grid items-center gap-16 lg:grid-cols-[1.05fr_0.95fr]">
         {/* --- colonna testo --- */}
         <div>
           <Reveal>
-            <p className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 text-xs font-medium text-brand-200">
+            <p className="inline-flex items-center gap-2 rounded-full border border-line bg-fg/5 px-3.5 py-1.5 text-xs font-medium text-accent-soft">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-acqua opacity-75" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-acqua" />
@@ -54,7 +52,7 @@ export default function Hero() {
           </Reveal>
 
           <Reveal delay={80}>
-            <h1 className="display mt-7 text-[clamp(2.6rem,6.2vw,4.6rem)] text-white">
+            <h1 className="display mt-7 text-[clamp(2.6rem,6.2vw,4.6rem)] text-fg">
               {hero.titleLead}{" "}
               <span className="text-gradient">{hero.titleAccent}</span>
               <br className="hidden sm:block" /> {hero.titleTail}
@@ -62,7 +60,7 @@ export default function Hero() {
           </Reveal>
 
           <Reveal delay={160}>
-            <p className="mt-7 max-w-xl text-base leading-relaxed text-mute sm:text-lg">
+            <p className="mt-7 max-w-xl text-base leading-relaxed text-fg-soft sm:text-lg">
               {hero.subtitle}
             </p>
           </Reveal>
@@ -79,7 +77,7 @@ export default function Hero() {
                   un effetto in più. */}
               <a
                 href={hero.secondaryCta.href}
-                className="inline-flex items-center gap-2 rounded-full border border-white/12 px-7 py-3.5 text-sm font-medium text-white/85 transition-colors hover:border-white/30 hover:bg-white/5 hover:text-white"
+                className="inline-flex items-center gap-2 rounded-full border border-line px-7 py-3.5 text-sm font-medium text-fg/85 transition-colors hover:border-line-strong hover:bg-fg/5 hover:text-fg"
               >
                 {hero.secondaryCta.label}
               </a>
@@ -87,13 +85,13 @@ export default function Hero() {
           </Reveal>
 
           <Reveal delay={320}>
-            <div className="mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-white/8 pt-8">
+            <div className="mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-line pt-8">
               {heroStats.map((stat) => (
                 <div key={stat.label}>
-                  <p className="display text-3xl text-white sm:text-4xl">
+                  <p className="display text-3xl text-fg sm:text-4xl">
                     <Counter to={stat.value} suffix={stat.suffix} />
                   </p>
-                  <p className="mt-1.5 text-xs leading-snug text-mute">{stat.label}</p>
+                  <p className="mt-1.5 text-xs leading-snug text-fg-soft">{stat.label}</p>
                 </div>
               ))}
             </div>
@@ -108,12 +106,12 @@ export default function Hero() {
               concreto senza aggiungere un paragrafo di testo. */}
           <div className="glass absolute bottom-2 left-0 hidden max-w-[15rem] rounded-2xl p-4 sm:block">
             <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-500/15 text-brand-300">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/15 text-accent-soft">
                 <ShieldCheck size={16} />
               </span>
-              <p className="text-sm font-semibold text-white">Dati in Italia</p>
+              <p className="text-sm font-semibold text-fg">Dati in Italia</p>
             </div>
-            <p className="mt-2 text-xs leading-relaxed text-mute">
+            <p className="mt-2 text-xs leading-relaxed text-fg-soft">
               Software conformi al GDPR e alle linee guida AgID per la pubblica amministrazione.
             </p>
           </div>

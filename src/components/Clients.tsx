@@ -15,8 +15,8 @@ import { Landmark } from "lucide-react";
 */
 export default function Clients() {
   return (
-    <section className="border-y border-white/8 bg-ink-900/60 py-10">
-      <p className="shell mb-7 text-center text-xs font-medium tracking-wide text-mute">
+    <section className="border-y border-line bg-surface-2 py-10">
+      <p className="shell mb-7 text-center text-xs font-medium tracking-wide text-fg-soft">
         Comuni, province e società partecipate che lavorano con noi
       </p>
 
@@ -24,14 +24,14 @@ export default function Clients() {
         {clients.map((name) => (
           <div
             key={name}
-            className="flex items-center gap-2.5 rounded-xl border border-white/8 bg-white/[0.03] px-5 py-3 whitespace-nowrap"
+            className="flex items-center gap-2.5 rounded-xl border border-line bg-fg/[0.03] px-5 py-3 whitespace-nowrap"
           >
             {/* Icona neutra da "ente pubblico": qui il marchio di
                 Ideapubblica sarebbe fuorviante — questi sono i clienti.
                 Va sostituita con i loghi reali una volta ottenute le
                 liberatorie. */}
-            <Landmark size={15} className="text-brand-300/70" />
-            <span className="text-sm font-medium text-white/70">{name}</span>
+            <Landmark size={15} className="text-accent-soft/70" />
+            <span className="text-sm font-medium text-fg/70">{name}</span>
           </div>
         ))}
       </Marquee>

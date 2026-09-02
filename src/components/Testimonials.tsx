@@ -36,12 +36,12 @@ export default function Testimonials() {
           {testimonials.map((t, i) => (
             <Reveal key={t.author + i} delay={i * 110} className="h-full">
               <figure className="glass flex h-full flex-col rounded-3xl p-7">
-                <Quote aria-hidden size={22} className="text-brand-400/60" />
-                <blockquote className="mt-5 text-base leading-relaxed text-white/90">
+                <Quote aria-hidden size={22} className="text-accent-soft/60" />
+                <blockquote className="mt-5 text-base leading-relaxed text-fg/90">
                   {t.quote}
                 </blockquote>
                 <figcaption className="mt-auto flex items-center gap-3 pt-7">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-500/15 text-xs font-bold text-brand-300">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accent/15 text-xs font-bold text-accent-soft">
                     {/* Iniziali: prima lettera delle prime due parole
                         ("Comune di Parma" → "CP"). */}
                     {t.author
@@ -53,8 +53,8 @@ export default function Testimonials() {
                       .toUpperCase()}
                   </span>
                   <span>
-                    <span className="block text-sm font-semibold text-white">{t.author}</span>
-                    <span className="block text-xs text-mute">{t.role}</span>
+                    <span className="block text-sm font-semibold text-fg">{t.author}</span>
+                    <span className="block text-xs text-fg-soft">{t.role}</span>
                   </span>
                 </figcaption>
               </figure>
@@ -63,7 +63,7 @@ export default function Testimonials() {
         </div>
 
         <Reveal delay={200}>
-          <p className="mt-8 text-center text-xs text-mute/70">
+          <p className="mt-8 text-center text-xs text-fg-faint">
             Testimonianze in fase di validazione con il cliente prima della pubblicazione.
           </p>
         </Reveal>
