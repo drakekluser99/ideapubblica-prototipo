@@ -36,10 +36,16 @@
   --color-brand-200: #c7d8ff;
   --color-brand-100: #e6edff;
 
-  /* Accenti ereditati dalla palette attuale, usati con parsimonia. */
+  /* Accenti ereditati dal sito attuale (campionati da ideapubblica.it):
+     blu #005FA8, ambra #F7A823, verde acqua #00A99D, viola #4F005E,
+     malva #CD8FBE, corallo #FD5E5A. Sono i colori delle "forme organiche"
+     che ricorrono nelle illustrazioni. */
   --color-acqua: #2ed3b7;
   --color-acqua-scuro: #0e9e88;
-  --color-ambra: #ffc24b;
+  --color-ambra: #f7a823;
+  --color-viola: #4f005e;
+  --color-malva: #cd8fbe;
+  --color-corallo: #fd5e5a;
 
   --font-display: "Instrument Sans Variable", "Instrument Sans", system-ui, sans-serif;
   --font-sans: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -82,6 +88,13 @@
   --color-band-fg-soft: var(--band-fg-soft);
   --color-band-line: var(--band-line);
   --color-band-accent: var(--band-accent);
+  /* Tinte di categoria: stessi colori del sito storico, con la luminosità
+     adattata al tema in corso perché restino leggibili. */
+  --color-tinta-blu: var(--tinta-blu);
+  --color-tinta-ambra: var(--tinta-ambra);
+  --color-tinta-verde: var(--tinta-verde);
+  --color-tinta-viola: var(--tinta-viola);
+  --color-tinta-corallo: var(--tinta-corallo);
   --color-positive: var(--positive);
 }
 
@@ -96,7 +109,9 @@
   --line-strong: rgb(255 255 255 / 0.16);
   --fg: #eef2fb;
   --fg-soft: #8fa0bd;
-  --fg-faint: #63718c;
+  /* Alzato da #63718c dopo l'audit: quel valore stava a 3,97:1, sotto il
+     minimo AA di 4,5:1 per il testo normale. */
+  --fg-faint: #7684a0;
   --accent: #2f6bff;
   --accent-soft: #93b4ff;
   --accent-ink: #ffffff;
@@ -108,6 +123,29 @@
   /* La fascia è chiara: il suo accento è il blu scuro, come nel tema chiaro. */
   --band-accent: #1d55e0;
   --positive: #2ed3b7;
+
+  /* Le tinte esistono in due versioni: una per i fondi scuri e una per i
+     fondi chiari. Non è un vezzo — il viola istituzionale #4F005E su fondo
+     scuro sparisce, e l'ambra #F7A823 su bianco sta a ~2:1, sotto il minimo
+     AA per il testo. Ogni contesto sceglie la versione che legge. */
+  --tinta-blu-scuro: #5b8cff;
+  --tinta-ambra-scuro: #f7b955;
+  --tinta-verde-scuro: #2ed3b7;
+  --tinta-viola-scuro: #cd8fbe;
+  --tinta-corallo-scuro: #ff8480;
+
+  --tinta-blu-chiaro: #005fa8;
+  --tinta-ambra-chiaro: #a56206;
+  --tinta-verde-chiaro: #007f76;
+  --tinta-viola-chiaro: #4f005e;
+  --tinta-corallo-chiaro: #c7332f;
+
+  /* Tema scuro: valgono le versioni per fondo scuro. */
+  --tinta-blu: var(--tinta-blu-scuro);
+  --tinta-ambra: var(--tinta-ambra-scuro);
+  --tinta-verde: var(--tinta-verde-scuro);
+  --tinta-viola: var(--tinta-viola-scuro);
+  --tinta-corallo: var(--tinta-corallo-scuro);
 
   /* Colori del marchio: la "versione negativa" per fondo scuro. */
   --logo-idea: #ffffff;
@@ -130,6 +168,7 @@
   --cta-edge: #2f6bff;
   --cta-edge-soft: #93b4ff;
   --cta-inner: #17243d;
+  --focus-ring: #93b4ff;
 }
 
 /* --- Tema chiaro --- */
@@ -143,7 +182,8 @@
   --line-strong: #cfd9ec;
   --fg: #0b1424;
   --fg-soft: #55637c;
-  --fg-faint: #8a95a8;
+  /* Idem sul chiaro: #8a95a8 stava a 2,82:1. */
+  --fg-faint: #646e80;
   /* Sul bianco il blu va scurito, altrimenti il testo piccolo non raggiunge
      il contrasto minimo AA (4.5:1). */
   --accent: #1d55e0;
@@ -158,6 +198,13 @@
   --band-accent: #5b8cff;
   /* Sul bianco l'acqua chiara sparisce: si scurisce per restare leggibile. */
   --positive: #0e9e88;
+
+  /* Tema chiaro: valgono i colori istituzionali. */
+  --tinta-blu: var(--tinta-blu-chiaro);
+  --tinta-ambra: var(--tinta-ambra-chiaro);
+  --tinta-verde: var(--tinta-verde-chiaro);
+  --tinta-viola: var(--tinta-viola-chiaro);
+  --tinta-corallo: var(--tinta-corallo-chiaro);
 
   /* Colori ufficiali del marchio, pensati proprio per il fondo chiaro. */
   --logo-idea: #897974;
@@ -182,6 +229,7 @@
   --cta-edge: #93b4ff;
   --cta-edge-soft: #ffffff;
   --cta-inner: rgb(255 255 255 / 0.25);
+  --focus-ring: #1d55e0;
 }
 
 html {
@@ -197,6 +245,17 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Anello di focus. Quello predefinito di Chrome è quasi nero: sul fondo blu
+   notte risultava invisibile, e su alcuni link la larghezza scendeva a 0.
+   Uno stile esplicito è l'unico modo per garantire il criterio 2.4.7.
+   :focus-visible e non :focus, così l'anello compare per chi naviga da
+   tastiera e non a ogni click del mouse. */
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
 ::selection {
   background-color: var(--accent);
   color: var(--accent-ink);
@@ -207,6 +266,29 @@ body {
    @utility è la sintassi di Tailwind 4 per aggiungere classi proprie:
    diventano utilizzabili nel JSX esattamente come quelle native.
    ========================================================================= */
+
+/* Link "salta al contenuto": invisibile finché non riceve il focus da
+   tastiera. Serve a non costringere chi naviga con la tastiera o con un
+   lettore di schermo ad attraversare tutto il menu a ogni pagina
+   (criterio 2.4.1). Non si usa display:none, che lo renderebbe non
+   focalizzabile: lo si sposta fuori schermo. */
+@utility salta-al-contenuto {
+  position: absolute;
+  left: 1rem;
+  top: -100%;
+  z-index: 100;
+  border-radius: 999px;
+  background-color: var(--accent);
+  color: var(--accent-ink);
+  padding: 0.75rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: top 200ms ease;
+}
+
+.salta-al-contenuto:focus {
+  top: 1rem;
+}
 
 /* Contenitore standard: stessa gabbia orizzontale in tutte le sezioni. */
 @utility shell {
@@ -259,6 +341,69 @@ body {
 
 @utility glow-b {
   background: radial-gradient(circle, var(--glow-b), transparent 70%);
+}
+
+/* La fascia invertita ribalta anche le tinte: dentro un sito scuro ha fondo
+   chiaro (quindi tinte scure) e viceversa. Senza questa regola, nel tema
+   chiaro i tag viola finivano scuri su fondo scuro — illeggibili. */
+.fascia-invertita {
+  --tinta-blu: var(--tinta-blu-chiaro);
+  --tinta-ambra: var(--tinta-ambra-chiaro);
+  --tinta-verde: var(--tinta-verde-chiaro);
+  --tinta-viola: var(--tinta-viola-chiaro);
+  --tinta-corallo: var(--tinta-corallo-chiaro);
+}
+
+:root[data-theme="light"] .fascia-invertita {
+  --tinta-blu: var(--tinta-blu-scuro);
+  --tinta-ambra: var(--tinta-ambra-scuro);
+  --tinta-verde: var(--tinta-verde-scuro);
+  --tinta-viola: var(--tinta-viola-scuro);
+  --tinta-corallo: var(--tinta-corallo-scuro);
+}
+
+/* --- Tinte di categoria -------------------------------------------------
+   Il problema da risolvere: Tailwind non accetta classi costruite al volo
+   (`text-${colore}` non viene compilato). La soluzione idiomatica è passare
+   il colore come variabile CSS e avere utility che la leggono.
+
+   Nel JSX si scrive una classe `tinta-*` sul contenitore e dentro si usano
+   `tinta-testo`, `tinta-fondo`, `tinta-bordo`: il colore scende per
+   ereditarietà e cambia in un punto solo.
+
+   color-mix() serve a ricavare le versioni trasparenti senza dover
+   dichiarare a mano cinque colori per ogni tinta. */
+@utility tinta-blu {
+  --tinta: var(--tinta-blu);
+}
+@utility tinta-ambra {
+  --tinta: var(--tinta-ambra);
+}
+@utility tinta-verde {
+  --tinta: var(--tinta-verde);
+}
+@utility tinta-viola {
+  --tinta: var(--tinta-viola);
+}
+@utility tinta-corallo {
+  --tinta: var(--tinta-corallo);
+}
+
+@utility tinta-testo {
+  color: var(--tinta, var(--accent));
+}
+@utility tinta-fondo {
+  background-color: color-mix(in srgb, var(--tinta, var(--accent)) 14%, transparent);
+}
+@utility tinta-bordo {
+  border-color: color-mix(in srgb, var(--tinta, var(--accent)) 40%, transparent);
+}
+@utility tinta-alone {
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--tinta, var(--accent)) 30%, transparent),
+    transparent 70%
+  );
 }
 
 /* Testo in gradiente per la parola-chiave dei titoli. */

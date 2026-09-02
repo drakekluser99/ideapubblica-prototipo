@@ -19,7 +19,7 @@ import Reveal from "@/components/ui/reveal";
 */
 
 const fieldClass =
-  "w-full rounded-xl border border-line bg-fg/[0.04] px-4 py-3 text-sm text-fg placeholder:text-fg-faint outline-none transition-colors focus:border-accent focus:bg-fg/[0.06]";
+  "w-full rounded-xl border border-line bg-fg/[0.04] px-4 py-3 text-sm text-fg placeholder:text-fg-faint transition-colors focus:border-accent focus:bg-fg/[0.06]";
 
 export default function ContactCTA() {
   return (
@@ -140,7 +140,7 @@ export default function ContactCTA() {
                 id="privacy"
                 name="privacy"
                 type="checkbox"
-                className="mt-0.5 h-4 w-4 shrink-0 rounded border-line-strong bg-fg/5 accent-accent"
+                className="mt-0.5 h-5 w-5 shrink-0 rounded border-line-strong bg-fg/5 accent-accent"
               />
               <label htmlFor="privacy" className="text-xs leading-relaxed text-fg-soft">
                 Ho letto l&apos;informativa e acconsento al trattamento dei dati per essere

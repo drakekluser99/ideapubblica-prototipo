@@ -38,7 +38,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
       onClick={toggle}
       aria-label="Passa dal tema scuro a quello chiaro"
       title="Cambia tema"
-      className={`theme-toggle flex h-10 w-10 items-center justify-center rounded-full border border-line text-fg-soft transition-colors hover:border-line-strong hover:text-fg ${className}`}
+      className={`theme-toggle flex h-11 w-11 items-center justify-center rounded-full border border-line text-fg-soft transition-colors hover:border-line-strong hover:text-fg ${className}`}
     >
       <Sun size={16} className="icon-sun" />
       <Moon size={16} className="icon-moon" />

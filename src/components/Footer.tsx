@@ -35,7 +35,7 @@ export default function Footer() {
                   // un lettore di schermo sentirebbe "link" e basta.
                   aria-label={`${s.label} — si apre in una nuova scheda`}
                   title={s.label}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-fg-soft transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/50 hover:bg-accent/10 hover:text-fg"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-fg-soft transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/50 hover:bg-accent/10 hover:text-fg"
                 >
                   <Icon className="h-4 w-4" />
                 </a>
@@ -49,7 +49,7 @@ export default function Footer() {
           <ul className="space-y-2.5">
             {nav.map((item) => (
               <li key={item.href}>
-                <a href={item.href} className="text-sm text-fg-soft transition-colors hover:text-fg">
+                <a href={item.href} className="inline-block py-1 text-sm text-fg-soft transition-colors hover:text-fg">
                   {item.label}
                 </a>
               </li>

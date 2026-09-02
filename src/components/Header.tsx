@@ -79,7 +79,7 @@ export default function Header() {
             <a
               key={item.href}
               href={item.href}
-              className="relative rounded-full px-4 py-2 text-sm font-medium text-fg-soft transition-colors hover:text-fg focus-visible:text-fg"
+              className="relative rounded-full px-4 py-3 text-sm font-medium text-fg-soft transition-colors hover:text-fg focus-visible:text-fg"
             >
               {item.label}
             </a>
@@ -98,7 +98,7 @@ export default function Header() {
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-fg"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-fg"
             aria-label={open ? "Chiudi il menu" : "Apri il menu"}
             aria-expanded={open}
           >
@@ -109,7 +109,12 @@ export default function Header() {
 
       {/* Pannello mobile: reso sempre nel DOM ma con altezza 0 quando chiuso,
           così la transizione è animabile. */}
+      {/* `inert` è la parte importante: senza, i link del pannello chiuso
+          restano nell'ordine di tabulazione, e chi naviga da tastiera finisce
+          su elementi invisibili. `inert` li toglie dal focus e dai lettori di
+          schermo mantenendo l'animazione dell'altezza. */}
       <div
+        inert={!open}
         className={`overflow-hidden border-t border-line bg-surface/95 backdrop-blur-xl transition-[max-height,opacity] duration-300 lg:hidden ${
           open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}

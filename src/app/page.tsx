@@ -15,8 +15,11 @@ import Footer from "@/components/Footer";
 export default function Home() {
   return (
     <>
+      <a href="#contenuto" className="salta-al-contenuto">
+        Salta al contenuto
+      </a>
       <Header />
-      <main>
+      <main id="contenuto">
         <Hero />
         {/* La riprova sociale sta subito sotto l'hero: è la sezione che
             convince di più in rapporto allo spazio che occupa. */}

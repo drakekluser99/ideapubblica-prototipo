@@ -32,12 +32,15 @@ export const heroStats = [
   { value: 6, suffix: "", label: "aree di competenza" },
 ] as const;
 
-// `icon` è una chiave, non un componente: i dati restano dati puri e la
-// scelta dell'icona la fa il componente che li mostra.
+// `icon` e `tint` sono chiavi, non componenti né colori: i dati restano dati
+// puri e la traduzione in icona/classe la fa il componente che li mostra.
+// Le tinte riprendono i colori del sito storico e servono a distinguere le
+// tre aree dell'offerta — non sono decorazione: ogni area ha la sua.
 export const pillars = [
   {
     title: "Servizi",
     icon: "services",
+    tint: "blu",
     description:
       "Affianchiamo gli enti nella gestione quotidiana: contabilità, controllo di gestione, privacy, anticorruzione, tributi e bilancio consolidato.",
     bullets: ["Contabilità e bilancio", "Controllo di gestione", "Privacy e anticorruzione"],
@@ -46,6 +49,7 @@ export const pillars = [
   {
     title: "Formazione",
     icon: "training",
+    tint: "ambra",
     description:
       "Percorsi formativi su misura, webinar e seminari per aggiornare in modo pratico chi lavora ogni giorno nella pubblica amministrazione.",
     bullets: ["Webinar in diretta", "Corsi su misura in ente", "Filodiretto RUP"],
@@ -54,6 +58,7 @@ export const pillars = [
   {
     title: "Software",
     icon: "software",
+    tint: "verde",
     description:
       "Strumenti digitali pensati per semplificare i processi degli enti: dalla gestione delle partecipate alla protezione dei dati.",
     bullets: ["P@rtecipo", "I-Privacy", "Economica"],
@@ -65,36 +70,42 @@ export const services = [
   {
     name: "Partecipate e bilancio consolidato",
     tag: "Contabilità",
+    tint: "blu",
     description:
       "Semplifichiamo la comunicazione tra ente e società partecipate, dalla raccolta dati alla revisione periodica delle partecipazioni.",
   },
   {
     name: "PEF rifiuti — metodo ARERA",
     tag: "Tributi",
+    tint: "ambra",
     description:
       "Supporto completo nella predisposizione del Piano Economico Finanziario rifiuti secondo la metodologia ARERA.",
   },
   {
     name: "Privacy, GDPR e ruolo di DPO",
     tag: "Conformità",
+    tint: "viola",
     description:
       "Assunzione dell'incarico di DPO, registro dei trattamenti, valutazioni d'impatto e formazione del personale.",
   },
   {
     name: "Contabilità economico-patrimoniale",
     tag: "Contabilità",
+    tint: "blu",
     description:
       "Impianto e tenuta della contabilità economico-patrimoniale, in versione standard o semplificata.",
   },
   {
     name: "Controllo di gestione e performance",
     tag: "Programmazione",
+    tint: "verde",
     description:
       "Dal piano della performance al referto annuale: indicatori, monitoraggi e reportistica per la direzione.",
   },
   {
     name: "Anticorruzione e trasparenza",
     tag: "Conformità",
+    tint: "viola",
     description:
       "PIAO, mappatura dei processi, misure di prevenzione e verifica degli obblighi di pubblicazione.",
   },
@@ -103,6 +114,7 @@ export const services = [
 export const softwareProducts = [
   {
     name: "P@rtecipo",
+    tint: "blu",
     icon: "network",
     description:
       "Gestione delle società partecipate e del bilancio consolidato: raccolta dati, scritture di rettifica e output pronti per la revisione.",
@@ -110,6 +122,7 @@ export const softwareProducts = [
   },
   {
     name: "I-Privacy",
+    tint: "viola",
     icon: "shield",
     description:
       "Conformità GDPR e supporto operativo al DPO, con registro dei trattamenti sempre aggiornato e scadenzario integrato.",
@@ -117,6 +130,7 @@ export const softwareProducts = [
   },
   {
     name: "Economica",
+    tint: "ambra",
     icon: "chart",
     description:
       "Contabilità economico-patrimoniale in versione standard o semplificata, allineata agli schemi di bilancio degli enti.",
@@ -124,6 +138,7 @@ export const softwareProducts = [
   },
   {
     name: "IdeafondiPA",
+    tint: "verde",
     icon: "compass",
     description:
       "Ricerca e monitoraggio di finanziamenti europei, nazionali e regionali, filtrati sul profilo dell'ente.",

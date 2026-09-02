@@ -2,6 +2,7 @@ import { ArrowUpRight, Boxes, Check, GraduationCap, LayoutGrid } from "lucide-re
 import { pillars } from "@/data/content";
 import SectionHeading from "@/components/ui/section-heading";
 import Reveal from "@/components/ui/reveal";
+import { tinte } from "@/components/ui/tints";
 
 /*
   I tre pilastri dell'offerta, in stile "bento": card di uguale peso ma con la
@@ -40,16 +41,20 @@ export default function Pillars() {
               <Reveal key={pillar.title} delay={i * 110} className="h-full">
                 <a
                   href={pillar.href}
-                  className="group glass relative flex h-full flex-col overflow-hidden rounded-3xl p-7 transition-all duration-300 hover:-translate-y-1 hover:border-accent/40"
+                  /* La classe `tinta-*` non colora nulla da sola: imposta la
+                     variabile --tinta, che gli elementi interni leggono con
+                     `tinta-testo`, `tinta-fondo`, `tinta-bordo`. Il colore
+                     dell'area si cambia in un punto solo, nei dati. */
+                  className={`group glass relative flex h-full flex-col overflow-hidden rounded-3xl p-7 transition-all duration-300 hover:-translate-y-1 hover:tinta-bordo ${tinte[pillar.tint]}`}
                 >
                   {/* Alone che compare in hover: dà "vita" alla card senza
                       cambiarne il layout (quindi senza far saltare il testo). */}
                   <span
                     aria-hidden
-                    className="glow-a pointer-events-none absolute -top-24 -right-16 h-56 w-56 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
+                    className="tinta-alone pointer-events-none absolute -top-24 -right-16 h-56 w-56 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
                   />
 
-                  <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-accent/12 text-accent-soft">
+                  <span className="tinta-fondo tinta-testo tinta-bordo flex h-11 w-11 items-center justify-center rounded-xl border">
                     <Icon size={20} />
                   </span>
 
@@ -59,13 +64,13 @@ export default function Pillars() {
                   <ul className="mt-6 space-y-2.5">
                     {pillar.bullets.map((b) => (
                       <li key={b} className="flex items-center gap-2.5 text-sm text-fg/80">
-                        <Check size={14} className="shrink-0 text-positive" />
+                        <Check size={14} className="tinta-testo shrink-0" />
                         {b}
                       </li>
                     ))}
                   </ul>
 
-                  <span className="mt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-accent-soft transition-transform duration-300 group-hover:translate-x-1">
+                  <span className="tinta-testo mt-8 inline-flex items-center gap-1.5 text-sm font-semibold transition-transform duration-300 group-hover:translate-x-1">
                     Approfondisci
                     <ArrowUpRight size={16} />
                   </span>

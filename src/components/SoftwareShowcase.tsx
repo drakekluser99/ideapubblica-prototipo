@@ -2,6 +2,7 @@ import { ArrowUpRight, BarChart3, Compass, Network, ShieldCheck } from "lucide-r
 import { softwareProducts } from "@/data/content";
 import SectionHeading from "@/components/ui/section-heading";
 import Reveal from "@/components/ui/reveal";
+import { tinte } from "@/components/ui/tints";
 
 /*
   Software — griglia "bento": la prima card occupa due colonne su desktop,
@@ -53,13 +54,13 @@ export default function SoftwareShowcase() {
                 delay={i * 100}
                 className={`h-full ${featured ? "lg:col-span-2" : ""}`}
               >
-                <article className="group glass relative flex h-full flex-col overflow-hidden rounded-3xl p-7 transition-all duration-300 hover:-translate-y-1 hover:border-accent/40">
+                <article className={`group glass relative flex h-full flex-col overflow-hidden rounded-3xl p-7 transition-all duration-300 hover:-translate-y-1 hover:tinta-bordo ${tinte[product.tint]}`}>
                   {/* Reticolo interno appena percettibile: dà "texture" alla
                       card e la fa sembrare una superficie, non un rettangolo. */}
                   <span aria-hidden className="grid-bg pointer-events-none absolute inset-0 opacity-40" />
 
                   <div className="relative flex items-start justify-between gap-4">
-                    <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-accent/12 text-accent-soft">
+                    <span className="tinta-fondo tinta-testo tinta-bordo flex h-11 w-11 items-center justify-center rounded-xl border">
                       <Icon size={20} />
                     </span>
                     <span className="rounded-full border border-line px-2.5 py-1 text-[11px] font-medium text-fg-soft">
@@ -91,7 +92,7 @@ export default function SoftwareShowcase() {
 
                   <a
                     href="#contatti"
-                    className="relative mt-auto inline-flex items-center gap-1.5 pt-7 text-sm font-semibold text-accent-soft transition-transform duration-300 group-hover:translate-x-1"
+                    className="tinta-testo relative mt-auto inline-flex items-center gap-1.5 pt-7 text-sm font-semibold transition-transform duration-300 group-hover:translate-x-1"
                   >
                     Richiedi una demo
                     <ArrowUpRight size={16} />
