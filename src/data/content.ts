@@ -12,63 +12,122 @@ export const nav = [
   { label: "Contatti", href: "#contatti" },
 ] as const;
 
+// Claim principale, spezzato per poter evidenziare una parola nel titolo.
+export const hero = {
+  eyebrow: "Servizi · Formazione · Software per la PA",
+  titleLead: "Rendiamo più semplice",
+  titleAccent: "la quotidianità",
+  titleTail: "di ogni ente.",
+  subtitle:
+    "Dal 2015 affianchiamo comuni, province e società partecipate su contabilità, controllo di gestione, privacy, anticorruzione e tributi: consulenza, formazione e software che parlano la stessa lingua.",
+  primaryCta: { label: "Parla con un consulente", href: "#contatti" },
+  secondaryCta: { label: "Scopri i software", href: "#software" },
+} as const;
+
+// Numeri di sintesi mostrati sotto al claim. Da validare col cliente:
+// oggi sono stime prudenti ricavate dal sito attuale.
+export const heroStats = [
+  { value: 10, suffix: "+", label: "anni al fianco degli enti" },
+  { value: 300, suffix: "+", label: "enti e partecipate seguiti" },
+  { value: 6, suffix: "", label: "aree di competenza" },
+] as const;
+
+// `icon` è una chiave, non un componente: i dati restano dati puri e la
+// scelta dell'icona la fa il componente che li mostra.
 export const pillars = [
   {
     title: "Servizi",
+    icon: "services",
     description:
       "Affianchiamo gli enti nella gestione quotidiana: contabilità, controllo di gestione, privacy, anticorruzione, tributi e bilancio consolidato.",
+    bullets: ["Contabilità e bilancio", "Controllo di gestione", "Privacy e anticorruzione"],
+    href: "#servizi",
   },
   {
     title: "Formazione",
+    icon: "training",
     description:
       "Percorsi formativi su misura, webinar e seminari per aggiornare in modo pratico chi lavora ogni giorno nella pubblica amministrazione.",
+    bullets: ["Webinar in diretta", "Corsi su misura in ente", "Filodiretto RUP"],
+    href: "#formazione",
   },
   {
     title: "Software",
+    icon: "software",
     description:
       "Strumenti digitali pensati per semplificare i processi degli enti: dalla gestione delle partecipate alla protezione dei dati.",
+    bullets: ["P@rtecipo", "I-Privacy", "Economica"],
+    href: "#software",
   },
 ] as const;
 
 export const services = [
   {
-    name: "P@rtecipo",
+    name: "Partecipate e bilancio consolidato",
+    tag: "Contabilità",
     description:
-      "Semplifica la comunicazione tra ente e società partecipate, supportando bilancio consolidato e revisione delle partecipazioni.",
+      "Semplifichiamo la comunicazione tra ente e società partecipate, dalla raccolta dati alla revisione periodica delle partecipazioni.",
   },
   {
-    name: "Piano Economico Finanziario rifiuti — ARERA",
+    name: "PEF rifiuti — metodo ARERA",
+    tag: "Tributi",
     description:
-      "Supporto nella predisposizione del PEF rifiuti secondo la metodologia ARERA.",
+      "Supporto completo nella predisposizione del Piano Economico Finanziario rifiuti secondo la metodologia ARERA.",
   },
   {
-    name: "I-Privacy",
+    name: "Privacy, GDPR e ruolo di DPO",
+    tag: "Conformità",
     description:
-      "Software per la gestione della conformità GDPR e il supporto al ruolo di DPO.",
+      "Assunzione dell'incarico di DPO, registro dei trattamenti, valutazioni d'impatto e formazione del personale.",
   },
   {
     name: "Contabilità economico-patrimoniale",
+    tag: "Contabilità",
     description:
-      "Soluzioni per la gestione della contabilità economico-patrimoniale, in versione standard o semplificata.",
+      "Impianto e tenuta della contabilità economico-patrimoniale, in versione standard o semplificata.",
+  },
+  {
+    name: "Controllo di gestione e performance",
+    tag: "Programmazione",
+    description:
+      "Dal piano della performance al referto annuale: indicatori, monitoraggi e reportistica per la direzione.",
+  },
+  {
+    name: "Anticorruzione e trasparenza",
+    tag: "Conformità",
+    description:
+      "PIAO, mappatura dei processi, misure di prevenzione e verifica degli obblighi di pubblicazione.",
   },
 ] as const;
 
 export const softwareProducts = [
   {
     name: "P@rtecipo",
-    description: "Gestione delle società partecipate e del bilancio consolidato.",
+    icon: "network",
+    description:
+      "Gestione delle società partecipate e del bilancio consolidato: raccolta dati, scritture di rettifica e output pronti per la revisione.",
+    features: ["Raccolta dati dalle partecipate", "Elisioni e rettifiche guidate", "Export per l'organo di revisione"],
   },
   {
     name: "I-Privacy",
-    description: "Conformità GDPR e supporto operativo al DPO.",
+    icon: "shield",
+    description:
+      "Conformità GDPR e supporto operativo al DPO, con registro dei trattamenti sempre aggiornato e scadenzario integrato.",
+    features: ["Registro dei trattamenti", "Valutazioni d'impatto (DPIA)", "Data breach e scadenze"],
   },
   {
     name: "Economica",
-    description: "Contabilità economico-patrimoniale, in versione standard o semplificata.",
+    icon: "chart",
+    description:
+      "Contabilità economico-patrimoniale in versione standard o semplificata, allineata agli schemi di bilancio degli enti.",
+    features: ["Piano dei conti integrato", "Riconciliazione con la finanziaria", "Schemi di bilancio pronti"],
   },
   {
     name: "IdeafondiPA",
-    description: "Ricerca di finanziamenti europei, nazionali e regionali per gli enti.",
+    icon: "compass",
+    description:
+      "Ricerca e monitoraggio di finanziamenti europei, nazionali e regionali, filtrati sul profilo dell'ente.",
+    features: ["Bandi filtrati per ente", "Avvisi sulle scadenze", "Schede di sintesi"],
   },
 ] as const;
 
@@ -77,15 +136,24 @@ export const softwareProducts = [
 export const webinars = [
   {
     title: "Coordinare programmazione e valutazione della performance",
-    date: "18 settembre 2026",
+    day: "18",
+    month: "SET",
+    time: "09:30 — 12:30",
+    format: "Webinar in diretta",
   },
   {
-    title: "Coordinare programmazione e valutazione della performance",
-    date: "21 settembre 2026",
+    title: "PEF rifiuti: cosa cambia nel prossimo periodo regolatorio",
+    day: "21",
+    month: "SET",
+    time: "15:00 — 17:00",
+    format: "Webinar in diretta",
   },
   {
-    title: "Coordinare programmazione e valutazione della performance",
-    date: "25 settembre 2026",
+    title: "Bilancio consolidato: perimetro, elisioni ed errori ricorrenti",
+    day: "25",
+    month: "SET",
+    time: "09:30 — 12:30",
+    format: "Webinar in diretta",
   },
 ] as const;
 
@@ -106,17 +174,20 @@ export const testimonials = [
   {
     quote:
       "La collaborazione ha portato a un miglioramento concreto nel rapporto tra l'ente e i cittadini, grazie anche a strumenti pensati per semplificare le procedure di rendicontazione.",
-    author: "Comune di Parma (PR)",
+    author: "Comune di Parma",
+    role: "Area finanziaria",
   },
   {
     quote:
       "Un supporto costante e competente, capace di adattarsi alle esigenze specifiche dell'ente in ogni fase del progetto.",
     author: "Ente cliente",
+    role: "Servizi finanziari",
   },
   {
     quote:
       "Professionalità e disponibilità del team hanno reso più semplice affrontare adempimenti complessi.",
     author: "Ente cliente",
+    role: "Segreteria generale",
   },
 ] as const;
 

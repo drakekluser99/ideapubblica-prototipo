@@ -1,19 +1,193 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+/* -------------------------------------------------------------------------
+   FONT
+   I font non arrivano più da Google al momento della build: i pacchetti
+   @fontsource-variable installano i file .woff2 dentro node_modules e li
+   importiamo da qui. Vantaggi: la build funziona ovunque (anche offline),
+   nessuna richiesta di rete verso Google quando l'utente apre il sito
+   (utile anche lato GDPR, tema sensibile per la PA), e sono font
+   "variable": un solo file copre tutti i pesi.
+   ------------------------------------------------------------------------- */
+@import "@fontsource-variable/instrument-sans/wght.css";
+@import "@fontsource-variable/inter/wght.css";
+
+/* -------------------------------------------------------------------------
+   DESIGN TOKEN
+   Qui vive la direzione grafica. Ogni colore/spaziatura usata nei componenti
+   deve passare da un token: se domani il cliente cambia il blu, si cambia
+   una riga qui e cambia tutto il sito.
+   ------------------------------------------------------------------------- */
+@theme {
+  /* Fondali scuri: blu notte, mai nero puro — il nero puro su schermo
+     sembra "spento", un blu molto desaturato resta profondo ma vivo. */
+  --color-ink-950: #05070f;
+  --color-ink-900: #080c18;
+  --color-ink-850: #0b1120;
+  --color-ink-800: #101a2e;
+  --color-ink-700: #17243d;
+
+  /* Blu di marca: eredita l'identità istituzionale ma più elettrico. */
+  --color-brand-700: #1740b8;
+  --color-brand-600: #1d55e0;
+  --color-brand-500: #2f6bff;
+  --color-brand-400: #5b8cff;
+  --color-brand-300: #93b4ff;
+  --color-brand-200: #c7d8ff;
+
+  /* Accenti ereditati dalla palette attuale, usati con parsimonia. */
+  --color-acqua: #2ed3b7;
+  --color-ambra: #ffc24b;
+
+  /* Sezioni chiare: non bianco puro, un grigio-azzurro riposante. */
+  --color-paper: #f3f6fc;
+  --color-paper-soft: #e8edf7;
+
+  /* Testi */
+  --color-mute: #8fa0bd; /* testo secondario su fondo scuro */
+  --color-mute-ink: #56637d; /* testo secondario su fondo chiaro */
+
+  --font-display: "Instrument Sans Variable", "Instrument Sans", system-ui, sans-serif;
+  --font-sans: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Larghezza massima del contenuto: un unico valore per tutto il sito. */
+  --spacing-shell: 76rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Evita che l'header sticky copra le sezioni quando si clicca un'ancora. */
+  scroll-padding-top: 6rem;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background-color: var(--color-ink-950);
+  color: #eef2fb;
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background-color: var(--color-brand-500);
+  color: white;
+}
+
+/* -------------------------------------------------------------------------
+   UTILITY DI PROGETTO
+   @utility è la sintassi di Tailwind 4 per aggiungere classi proprie:
+   diventano utilizzabili nel JSX esattamente come quelle native.
+   ------------------------------------------------------------------------- */
+
+/* Contenitore standard: stessa gabbia orizzontale in tutte le sezioni. */
+@utility shell {
+  width: 100%;
+  max-width: var(--spacing-shell);
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+/* Titoli: font display, crenatura stretta (i titoli grandi hanno bisogno di
+   meno spazio tra le lettere per non sembrare "sfilacciati"). */
+@utility display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+}
+
+/* Etichetta piccola sopra ai titoli (l'"occhiello"). */
+@utility eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Vetro: superficie delle card sui fondi scuri. */
+@utility glass {
+  background-color: color-mix(in srgb, var(--color-ink-800) 70%, transparent);
+  border: 1px solid rgb(255 255 255 / 0.08);
+  backdrop-filter: blur(12px);
+}
+
+/* Reticolo tecnico di sfondo: richiama i dati/le griglie senza immagini. */
+@utility grid-bg {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.045) 1px, transparent 1px);
+  background-size: 68px 68px;
+}
+
+/* Testo in gradiente per la parola-chiave dei titoli. */
+@utility text-gradient {
+  background-image: linear-gradient(
+    100deg,
+    var(--color-brand-300),
+    var(--color-brand-500) 45%,
+    var(--color-acqua)
+  );
+  background-clip: text;
+  color: transparent;
+}
+
+/* -------------------------------------------------------------------------
+   ANIMAZIONI
+   Definite una volta sola qui e richiamate dai componenti.
+   ------------------------------------------------------------------------- */
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(2deg);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* -50% perché la lista dei loghi è duplicata: quando la prima copia
+       è uscita, la seconda si trova esattamente al punto di partenza. */
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    opacity: 0.55;
+    transform: scale(0.85);
+  }
+  70% {
+    opacity: 0;
+    transform: scale(1.35);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.35);
+  }
+}
+
+/* -------------------------------------------------------------------------
+   ACCESSIBILITÀ
+   Chi ha attivato "riduci animazioni" nel sistema operativo non deve
+   subire movimento. Regola non negoziabile: costa tre righe.
+   ------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }

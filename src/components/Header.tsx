@@ -1,67 +1,103 @@
 "use client";
 
-// "use client" perché questo componente ha stato locale (il menu mobile
-// aperto/chiuso): in Next.js i componenti sono Server Components di default
-// (renderizzati solo sul server, zero JS spedito al browser), e diventano
-// Client Components solo quando serve interattività — come qui con useState.
-
-import { useState } from "react";
-import Link from "next/link";
+import { useEffect, useState } from "react";
+import { Menu, X } from "lucide-react";
 import { nav } from "@/data/content";
+import ShinyButton from "@/components/ui/shiny-button";
+import Logo from "@/components/ui/logo";
+
+/*
+  Header sticky con due stati.
+
+  In cima alla pagina è trasparente e "alto", così l'hero respira. Appena si
+  scrolla oltre 24px diventa più compatto, prende un fondo sfocato e una
+  linea di separazione. È un dettaglio piccolo ma è quello che fa percepire
+  il sito come "applicativo" e non come brochure statica.
+
+  Il listener sullo scroll è passivo (`{ passive: true }`): dice al browser
+  che non chiameremo mai preventDefault, così può continuare a scrollare
+  senza aspettare il nostro codice.
+*/
 
 export default function Header() {
+  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
-  return (
-    <header className="sticky top-0 z-50 border-b border-black/5 bg-white/90 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="#top" className="text-lg font-extrabold tracking-tight text-blue-900">
-          idea<span className="text-amber-500">pubblica</span>
-        </Link>
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-        {/* Nav da desktop: nascosta sotto md, mostrata da md in su */}
-        <nav className="hidden items-center gap-8 md:flex">
+  // Quando il menu mobile è aperto blocchiamo lo scroll del body,
+  // altrimenti la pagina scorre "sotto" all'overlay.
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  return (
+    <header
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "border-b border-white/8 bg-ink-950/80 backdrop-blur-xl"
+          : "border-b border-transparent bg-transparent"
+      }`}
+    >
+      <div className={`shell flex items-center justify-between transition-all duration-300 ${scrolled ? "h-16" : "h-20"}`}>
+        <a href="#top" className="flex items-center gap-2.5" aria-label="Ideapubblica, torna in cima">
+          <Logo className="h-7 w-7" />
+          <span className="display text-lg tracking-tight text-white">
+            idea<span className="text-brand-400">pubblica</span>
+          </span>
+        </a>
+
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Navigazione principale">
           {nav.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              className="text-sm font-medium text-slate-700 transition-colors hover:text-blue-900"
+              className="relative rounded-full px-4 py-2 text-sm font-medium text-mute transition-colors hover:text-white focus-visible:text-white"
             >
               {item.label}
             </a>
           ))}
         </nav>
 
-        <a
-          href="#contatti"
-          className="hidden rounded-full bg-blue-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-800 md:inline-block"
-        >
-          Contattaci
-        </a>
+        <div className="hidden lg:block">
+          <ShinyButton href="#contatti" className="!px-6 !py-3 !text-sm">
+            Contattaci
+          </ShinyButton>
+        </div>
 
-        {/* Bottone hamburger, visibile solo su mobile */}
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-white lg:hidden"
+          aria-label={open ? "Chiudi il menu" : "Apri il menu"}
           aria-expanded={open}
-          aria-label="Apri il menu"
-          className="inline-flex flex-col gap-1.5 p-2 md:hidden"
         >
-          <span className="h-0.5 w-6 bg-slate-900" />
-          <span className="h-0.5 w-6 bg-slate-900" />
-          <span className="h-0.5 w-6 bg-slate-900" />
+          {open ? <X size={18} /> : <Menu size={18} />}
         </button>
       </div>
 
-      {/* Pannello mobile: renderizzato solo se open è true */}
-      {open && (
-        <nav className="flex flex-col gap-1 border-t border-black/5 bg-white px-6 py-4 md:hidden">
+      {/* Pannello mobile: reso sempre nel DOM ma con altezza 0 quando chiuso,
+          così la transizione è animabile. */}
+      <div
+        className={`overflow-hidden border-t border-white/8 bg-ink-950/95 backdrop-blur-xl transition-[max-height,opacity] duration-300 lg:hidden ${
+          open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <nav className="shell flex flex-col gap-1 py-5" aria-label="Navigazione mobile">
           {nav.map((item) => (
             <a
               key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
-              className="py-2 text-sm font-medium text-slate-700"
+              className="rounded-xl px-3 py-3 text-base font-medium text-mute transition-colors hover:bg-white/5 hover:text-white"
             >
               {item.label}
             </a>
@@ -69,12 +105,12 @@ export default function Header() {
           <a
             href="#contatti"
             onClick={() => setOpen(false)}
-            className="mt-2 rounded-full bg-blue-900 px-5 py-2.5 text-center text-sm font-semibold text-white"
+            className="mt-2 rounded-full bg-brand-500 px-5 py-3 text-center text-sm font-semibold text-white"
           >
             Contattaci
           </a>
         </nav>
-      )}
+      </div>
     </header>
   );
 }

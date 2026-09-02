@@ -18,11 +18,13 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
+        {/* La riprova sociale sta subito sotto l'hero: è la sezione che
+            convince di più in rapporto allo spazio che occupa. */}
+        <Clients />
         <Pillars />
         <Services />
         <SoftwareShowcase />
         <Webinars />
-        <Clients />
         <Testimonials />
         <ContactCTA />
       </main>

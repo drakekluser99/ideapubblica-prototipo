@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-// Niente next/font/google in questo prototipo: quel meccanismo scarica i
-// file dei font da Google al momento della build, e l'ambiente in cui
-// stiamo lavorando non ha accesso a quel dominio. Usiamo per ora lo stack
-// di font di sistema (vedi globals.css) — la tipografia definitiva sarà
-// decisa nella fase di direzione grafica e si può reintrodurre allora,
-// eventualmente auto-ospitando i file con next/font/local.
+// Tipografia: Instrument Sans (titoli) + Inter (testo), auto-ospitati con i
+// pacchetti @fontsource-variable importati in globals.css. Rispetto a
+// next/font/google i file arrivano da npm invece che da un download in fase
+// di build: la build funziona anche senza rete verso Google e, soprattutto,
+// il sito pubblicato non fa nessuna richiesta ai server di Google — dettaglio
+// non secondario per un cliente della pubblica amministrazione.
 
 export const metadata: Metadata = {
   title: "Ideapubblica — Servizi, formazione e software per gli enti",

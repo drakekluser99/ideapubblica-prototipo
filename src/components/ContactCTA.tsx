@@ -1,120 +1,163 @@
-"use client";
-
-// Client Component perché gestiamo lo stato di invio del form (submitted)
-// e intercettiamo l'evento di submit nel browser. In questo prototipo il
-// form non è collegato a nessun backend: al submit mostriamo solo un
-// messaggio di conferma finto, da sostituire con una vera chiamata
-// (es. a un Route Handler /api/contact, o a un servizio come Resend/Formspree)
-// quando il sito passerà dalla fase di prototipo a quella funzionante.
-
-import { useState, type FormEvent } from "react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { contact } from "@/data/content";
+import ShinyButton from "@/components/ui/shiny-button";
+import Reveal from "@/components/ui/reveal";
+
+/*
+  Sezione contatti: recapiti a sinistra, form a destra.
+
+  Il form è ancora solo interfaccia — non invia nulla. Il passo successivo
+  sarà un Route Handler in `app/api/contatti/route.ts` che riceve il POST e
+  gira il messaggio a un provider email (Resend, per esempio), oppure una
+  Server Action. Nel frattempo i campi hanno già `name`, `type` e
+  `autoComplete` corretti: sono gli attributi che il browser usa per il
+  riempimento automatico e che serviranno identici quando collegheremo l'invio.
+
+  Ogni input ha una <label> collegata via htmlFor/id. Non è un vezzo: senza,
+  il campo è invisibile a chi naviga con lettore di schermo — e per un sito
+  della PA l'accessibilità è un requisito, non un extra.
+*/
+
+const fieldClass =
+  "w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-mute/70 outline-none transition-colors focus:border-brand-500 focus:bg-white/[0.06]";
 
 export default function ContactCTA() {
-  const [submitted, setSubmitted] = useState(false);
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setSubmitted(true);
-  }
-
   return (
-    <section id="contatti" className="bg-slate-50 py-20">
-      <div className="mx-auto grid max-w-6xl gap-12 px-6 md:grid-cols-2">
+    <section id="contatti" className="relative overflow-hidden py-24 sm:py-32">
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-20 grid-bg opacity-50" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute top-0 left-1/2 -z-10 h-[34rem] w-[48rem] -translate-x-1/2 rounded-full blur-3xl"
+        style={{ background: "radial-gradient(circle, rgba(47,107,255,0.2), transparent 70%)" }}
+      />
+
+      <div className="shell grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
         <div>
-          <h2 className="text-sm font-semibold uppercase tracking-widest text-amber-600">
-            Contattaci
-          </h2>
-          <p className="mt-2 text-2xl font-bold text-blue-950 sm:text-3xl">
-            Rendiamo più semplice la quotidianità di ogni ente.
-          </p>
-          <dl className="mt-8 space-y-3 text-sm text-slate-600">
-            <div>
-              <dt className="font-semibold text-slate-900">Telefono</dt>
-              <dd>
-                <a href={contact.phoneHref} className="hover:text-blue-900">
-                  {contact.phone}
-                </a>
-              </dd>
-            </div>
-            <div>
-              <dt className="font-semibold text-slate-900">Email</dt>
-              <dd>
-                <a href={`mailto:${contact.email}`} className="hover:text-blue-900">
-                  {contact.email}
-                </a>
-              </dd>
-            </div>
-            {contact.addresses.map((address) => (
-              <div key={address.label}>
-                <dt className="font-semibold text-slate-900">{address.label}</dt>
-                <dd>{address.value}</dd>
+          <Reveal>
+            <p className="eyebrow mb-4 flex items-center gap-2 text-brand-300">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-current" />
+              Contatti
+            </p>
+            <h2 className="display text-[clamp(2rem,4.4vw,3.25rem)] text-white">
+              Raccontateci la <span className="text-gradient">scadenza</span> che avete davanti
+            </h2>
+            <p className="mt-5 text-base leading-relaxed text-mute">
+              Rispondiamo entro un giorno lavorativo con una persona, non con un preventivo
+              automatico.
+            </p>
+          </Reveal>
+
+          <Reveal delay={140}>
+            <div className="mt-10 space-y-4">
+              <a
+                href={contact.phoneHref}
+                className="glass flex items-center gap-3.5 rounded-2xl p-4 transition-colors hover:border-brand-500/40"
+              >
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-500/12 text-brand-300">
+                  <Phone size={17} />
+                </span>
+                <span>
+                  <span className="block text-xs text-mute">Telefono</span>
+                  <span className="block text-sm font-semibold text-white">{contact.phone}</span>
+                </span>
+              </a>
+
+              <a
+                href={`mailto:${contact.email}`}
+                className="glass flex items-center gap-3.5 rounded-2xl p-4 transition-colors hover:border-brand-500/40"
+              >
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-500/12 text-brand-300">
+                  <Mail size={17} />
+                </span>
+                <span>
+                  <span className="block text-xs text-mute">Email</span>
+                  <span className="block text-sm font-semibold text-white">{contact.email}</span>
+                </span>
+              </a>
+
+              <div className="glass rounded-2xl p-4">
+                <div className="flex items-center gap-3.5">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-500/12 text-brand-300">
+                    <MapPin size={17} />
+                  </span>
+                  <span className="text-xs text-mute">Sedi</span>
+                </div>
+                <ul className="mt-3 space-y-1.5">
+                  {contact.addresses.map((a) => (
+                    <li key={a.label} className="text-sm text-white/85">
+                      <span className="text-mute">{a.label}:</span> {a.value}
+                    </li>
+                  ))}
+                </ul>
               </div>
-            ))}
-          </dl>
+            </div>
+          </Reveal>
         </div>
 
-        <div className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
-          {submitted ? (
-            <p className="text-sm font-medium text-blue-950">
-              Grazie per averci scritto! Ti risponderemo il prima possibile.
-              <br />
-              <span className="text-slate-500">
-                (Prototipo: nessun messaggio è stato realmente inviato.)
-              </span>
-            </p>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <input
-                  required
-                  name="nome"
-                  placeholder="Nome e cognome"
-                  className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm outline-none focus:border-blue-900"
-                />
-                <input
-                  required
-                  type="email"
-                  name="email"
-                  placeholder="Email"
-                  className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm outline-none focus:border-blue-900"
-                />
-                <input
-                  name="telefono"
-                  placeholder="Telefono"
-                  className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm outline-none focus:border-blue-900"
-                />
-                <input
-                  name="ente"
-                  placeholder="Ente di appartenenza"
-                  className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm outline-none focus:border-blue-900"
-                />
+        <Reveal from="right" delay={120}>
+          <form className="glass rounded-3xl p-7 sm:p-9">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label htmlFor="nome" className="mb-2 block text-xs font-medium text-mute">
+                  Nome e cognome
+                </label>
+                <input id="nome" name="nome" autoComplete="name" className={fieldClass} placeholder="Mario Rossi" />
               </div>
-              <input
-                name="oggetto"
-                placeholder="Oggetto"
-                className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm outline-none focus:border-blue-900"
-              />
-              <textarea
-                required
-                name="messaggio"
-                placeholder="Messaggio"
-                rows={4}
-                className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm outline-none focus:border-blue-900"
-              />
-              <label className="flex items-start gap-2 text-xs text-slate-500">
-                <input required type="checkbox" className="mt-0.5" />
-                Ho letto e accetto l&apos;informativa sulla privacy.
+              <div>
+                <label htmlFor="ente" className="mb-2 block text-xs font-medium text-mute">
+                  Ente
+                </label>
+                <input id="ente" name="ente" autoComplete="organization" className={fieldClass} placeholder="Comune di…" />
+              </div>
+              <div>
+                <label htmlFor="email" className="mb-2 block text-xs font-medium text-mute">
+                  Email
+                </label>
+                <input id="email" name="email" type="email" autoComplete="email" className={fieldClass} placeholder="nome@comune.it" />
+              </div>
+              <div>
+                <label htmlFor="telefono" className="mb-2 block text-xs font-medium text-mute">
+                  Telefono
+                </label>
+                <input id="telefono" name="telefono" type="tel" autoComplete="tel" className={fieldClass} placeholder="071 …" />
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <label htmlFor="messaggio" className="mb-2 block text-xs font-medium text-mute">
+                Come possiamo aiutarvi?
               </label>
-              <button
-                type="submit"
-                className="w-full rounded-full bg-blue-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-800"
-              >
-                Invia richiesta
-              </button>
-            </form>
-          )}
-        </div>
+              <textarea
+                id="messaggio"
+                name="messaggio"
+                rows={4}
+                className={`${fieldClass} resize-none`}
+                placeholder="Descrivete brevemente l'esigenza o la scadenza…"
+              />
+            </div>
+
+            <div className="mt-5 flex items-start gap-3">
+              <input
+                id="privacy"
+                name="privacy"
+                type="checkbox"
+                className="mt-0.5 h-4 w-4 shrink-0 rounded border-white/20 bg-white/5 accent-brand-500"
+              />
+              <label htmlFor="privacy" className="text-xs leading-relaxed text-mute">
+                Ho letto l&apos;informativa e acconsento al trattamento dei dati per essere
+                ricontattato.
+              </label>
+            </div>
+
+            <div className="mt-7">
+              <ShinyButton type="submit">Invia la richiesta</ShinyButton>
+            </div>
+
+            <p className="mt-4 text-[11px] text-mute/70">
+              Prototipo: il modulo non invia ancora messaggi.
+            </p>
+          </form>
+        </Reveal>
       </div>
     </section>
   );

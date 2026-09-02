@@ -1,43 +1,123 @@
-// Componente puramente statico (nessun useState/useEffect), quindi resta
-// un Server Component: niente "use client" in cima al file. Next.js lo
-// renderizza in HTML già pronto, più veloce da caricare per l'utente.
+import { ArrowRight, ShieldCheck } from "lucide-react";
+import { hero, heroStats } from "@/data/content";
+import ShinyButton from "@/components/ui/shiny-button";
+import Reveal from "@/components/ui/reveal";
+import Counter from "@/components/ui/counter";
+import NetworkVisual from "@/components/ui/network-visual";
 
+/*
+  Hero — la prima schermata.
+
+  Struttura: griglia a due colonne su desktop (testo a sinistra, visual a
+  destra), una colonna sola su mobile. Il fondo è costruito a strati, dal più
+  lontano al più vicino:
+    1. reticolo tecnico (utility `grid-bg`)
+    2. due aloni radiali blu/acqua sfocati
+    3. una sfumatura verso il basso che "scioglie" l'hero nella sezione dopo
+  Nessuna immagine: tutto CSS/SVG, quindi zero peso e nessun rischio di foto
+  di stock che invecchiano male.
+
+  Il titolo usa `clamp()` invece dei breakpoint: la dimensione scala in
+  continuo con la larghezza della finestra, senza salti.
+*/
 export default function Hero() {
   return (
-    <section id="top" className="relative overflow-hidden bg-blue-900 text-white">
-      {/* Forme decorative: solo un rimando allo stile "blob" del sito
-          originale. Placeholder in attesa della direzione grafica definitiva. */}
-      <div className="pointer-events-none absolute -right-24 top-1/2 hidden h-96 w-96 -translate-y-1/2 rounded-full bg-amber-400/90 md:block" />
-      <div className="pointer-events-none absolute -right-10 -top-20 h-56 w-56 rounded-full bg-fuchsia-700/70" />
+    <section id="top" className="relative overflow-hidden pt-32 pb-20 sm:pt-40 sm:pb-28">
+      {/* --- strati di sfondo --- */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-30 grid-bg opacity-70" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-40 left-1/2 -z-20 h-[36rem] w-[52rem] -translate-x-1/2 rounded-full blur-3xl"
+        style={{ background: "radial-gradient(circle, rgba(47,107,255,0.22), transparent 68%)" }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -bottom-24 -left-24 -z-20 h-96 w-96 rounded-full blur-3xl"
+        style={{ background: "radial-gradient(circle, rgba(46,211,183,0.14), transparent 70%)" }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-b from-transparent to-ink-950"
+      />
 
-      <div className="relative mx-auto grid max-w-6xl gap-10 px-6 py-24 md:grid-cols-2 md:py-32">
+      <div className="shell grid items-center gap-16 lg:grid-cols-[1.05fr_0.95fr]">
+        {/* --- colonna testo --- */}
         <div>
-          <h1 className="text-4xl font-extrabold leading-tight sm:text-5xl">
-            Diamo nuove forme <br className="hidden sm:block" />
-            ai servizi e alla formazione <br className="hidden sm:block" />
-            per gli enti
-          </h1>
-          <p className="mt-6 max-w-xl text-lg text-blue-100">
-            Ideapubblica è ogni giorno al fianco degli enti locali e delle
-            loro partecipate, per semplificare i processi burocratici su
-            contabilità, controllo di gestione, privacy, anticorruzione,
-            tributi e bilancio consolidato.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-4">
-            <a
-              href="#servizi"
-              className="rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-blue-950 transition-transform hover:scale-105"
-            >
-              Scopri i servizi
-            </a>
-            <a
-              href="#contatti"
-              className="rounded-full border border-white/40 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
-            >
-              Contattaci
-            </a>
-          </div>
+          <Reveal>
+            <p className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 text-xs font-medium text-brand-200">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-acqua opacity-75" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-acqua" />
+              </span>
+              {hero.eyebrow}
+            </p>
+          </Reveal>
+
+          <Reveal delay={80}>
+            <h1 className="display mt-7 text-[clamp(2.6rem,6.2vw,4.6rem)] text-white">
+              {hero.titleLead}{" "}
+              <span className="text-gradient">{hero.titleAccent}</span>
+              <br className="hidden sm:block" /> {hero.titleTail}
+            </h1>
+          </Reveal>
+
+          <Reveal delay={160}>
+            <p className="mt-7 max-w-xl text-base leading-relaxed text-mute sm:text-lg">
+              {hero.subtitle}
+            </p>
+          </Reveal>
+
+          <Reveal delay={240}>
+            <div className="mt-9 flex flex-wrap items-center gap-3">
+              <ShinyButton href={hero.primaryCta.href}>
+                {hero.primaryCta.label}
+                <ArrowRight size={17} />
+              </ShinyButton>
+              {/* Il CTA secondario resta volutamente "muto": due bottoni
+                  animati affiancati si rubano l'attenzione a vicenda e
+                  nessuno dei due funziona. Una gerarchia chiara vale più di
+                  un effetto in più. */}
+              <a
+                href={hero.secondaryCta.href}
+                className="inline-flex items-center gap-2 rounded-full border border-white/12 px-7 py-3.5 text-sm font-medium text-white/85 transition-colors hover:border-white/30 hover:bg-white/5 hover:text-white"
+              >
+                {hero.secondaryCta.label}
+              </a>
+            </div>
+          </Reveal>
+
+          <Reveal delay={320}>
+            <div className="mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-white/8 pt-8">
+              {heroStats.map((stat) => (
+                <div key={stat.label}>
+                  <p className="display text-3xl text-white sm:text-4xl">
+                    <Counter to={stat.value} suffix={stat.suffix} />
+                  </p>
+                  <p className="mt-1.5 text-xs leading-snug text-mute">{stat.label}</p>
+                </div>
+              ))}
+            </div>
+          </Reveal>
         </div>
+
+        {/* --- colonna visual --- */}
+        <Reveal from="right" delay={200} className="relative">
+          <NetworkVisual className="mx-auto aspect-square w-full max-w-lg" />
+
+          {/* Card flottante: dà scala al visual e comunica un beneficio
+              concreto senza aggiungere un paragrafo di testo. */}
+          <div className="glass absolute bottom-2 left-0 hidden max-w-[15rem] rounded-2xl p-4 sm:block">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-500/15 text-brand-300">
+                <ShieldCheck size={16} />
+              </span>
+              <p className="text-sm font-semibold text-white">Dati in Italia</p>
+            </div>
+            <p className="mt-2 text-xs leading-relaxed text-mute">
+              Software conformi al GDPR e alle linee guida AgID per la pubblica amministrazione.
+            </p>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
