@@ -1,6 +1,6 @@
 import { clients } from "@/data/content";
 import Marquee from "@/components/ui/marquee";
-import Logo from "@/components/ui/logo";
+import { Landmark } from "lucide-react";
 
 /*
   Fascia di riprova sociale, subito sotto all'hero.
@@ -26,7 +26,11 @@ export default function Clients() {
             key={name}
             className="flex items-center gap-2.5 rounded-xl border border-white/8 bg-white/[0.03] px-5 py-3 whitespace-nowrap"
           >
-            <Logo className="h-4 w-4 opacity-70" />
+            {/* Icona neutra da "ente pubblico": qui il marchio di
+                Ideapubblica sarebbe fuorviante — questi sono i clienti.
+                Va sostituita con i loghi reali una volta ottenute le
+                liberatorie. */}
+            <Landmark size={15} className="text-brand-300/70" />
             <span className="text-sm font-medium text-white/70">{name}</span>
           </div>
         ))}

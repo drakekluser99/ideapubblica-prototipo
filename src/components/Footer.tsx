@@ -1,5 +1,6 @@
 import { contact, nav } from "@/data/content";
 import Logo from "@/components/ui/logo";
+import { socialIcons } from "@/components/ui/social-icons";
 
 /*
   Footer. Tre blocchi: identità, navigazione, contatti; poi una riga legale.
@@ -13,27 +14,33 @@ export default function Footer() {
     <footer className="border-t border-white/8 bg-ink-900/60">
       <div className="shell grid gap-10 py-16 md:grid-cols-[1.4fr_1fr_1fr]">
         <div>
-          <div className="flex items-center gap-2.5">
-            <Logo className="h-7 w-7" />
-            <span className="display text-lg text-white">
-              idea<span className="text-brand-400">pubblica</span>
-            </span>
-          </div>
+          {/* Nel footer c'è spazio per la versione completa, payoff incluso. */}
+          <Logo tone="onDark" gradientId="ip-logo-footer" className="h-auto w-56" />
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-mute">
             Diamo nuove forme ai servizi e alla formazione per gli enti. Dal 2015.
           </p>
-          <div className="mt-6 flex flex-wrap gap-2">
-            {contact.social.map((s) => (
-              <a
-                key={s.label}
-                href={s.href}
-                target="_blank"
-                rel="noreferrer"
-                className="rounded-full border border-white/10 px-4 py-2 text-xs font-medium text-mute transition-colors hover:border-brand-500/40 hover:text-white"
-              >
-                {s.label}
-              </a>
-            ))}
+          <div className="mt-6 flex flex-wrap gap-2.5">
+            {contact.social.map((s) => {
+              const Icon = socialIcons[s.icon];
+              return (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  // noreferrer implica noopener, ma li scriviamo entrambi:
+                  // è la forma che funziona anche sui browser più vecchi e
+                  // impedisce alla pagina aperta di manipolare la nostra.
+                  rel="noopener noreferrer"
+                  // Il link contiene solo un'icona: senza aria-label chi usa
+                  // un lettore di schermo sentirebbe "link" e basta.
+                  aria-label={`${s.label} — si apre in una nuova scheda`}
+                  title={s.label}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-mute transition-all duration-300 hover:-translate-y-0.5 hover:border-brand-500/50 hover:bg-brand-500/10 hover:text-white"
+                >
+                  <Icon className="h-4 w-4" />
+                </a>
+              );
+            })}
           </div>
         </div>
 

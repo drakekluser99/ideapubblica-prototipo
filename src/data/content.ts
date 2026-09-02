@@ -200,9 +200,11 @@ export const contact = {
     { label: "Sede legale", value: "Via Liuti, 2 — 61122 Pesaro (PU)" },
     { label: "Sede operativa", value: "Via Giulio Pastore, 17 — 60131 Ancona (AN)" },
   ],
+  // `icon` è una chiave testuale: il componente che le mostra la traduce nel
+  // relativo SVG (vedi components/ui/social-icons.tsx).
   social: [
-    { label: "Facebook", href: "https://www.facebook.com/Ideapubblica-srl-174636776250806/" },
-    { label: "LinkedIn", href: "https://www.linkedin.com/company/ideapubblica/" },
-    { label: "YouTube", href: "https://www.youtube.com/channel/UC7QS1ZegA5IXBK6ZrY3oJiQ" },
+    { label: "Facebook", icon: "facebook", href: "https://www.facebook.com/ideapubblica" },
+    { label: "LinkedIn", icon: "linkedin", href: "https://www.linkedin.com/company/ideapubblica/" },
+    { label: "YouTube", icon: "youtube", href: "https://www.youtube.com/channel/UC7QS1ZegA5IXBK6ZrY3oJiQ" },
   ],
 } as const;

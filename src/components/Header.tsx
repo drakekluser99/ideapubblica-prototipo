@@ -48,11 +48,21 @@ export default function Header() {
       }`}
     >
       <div className={`shell flex items-center justify-between transition-all duration-300 ${scrolled ? "h-16" : "h-20"}`}>
-        <a href="#top" className="flex items-center gap-2.5" aria-label="Ideapubblica, torna in cima">
-          <Logo className="h-7 w-7" />
-          <span className="display text-lg tracking-tight text-white">
-            idea<span className="text-brand-400">pubblica</span>
-          </span>
+        {/* Il logo è già l'etichetta del link, quindi l'SVG viene nascosto
+            ai lettori di schermo (aria-hidden) e il nome lo dà l'anchor:
+            altrimenti verrebbe annunciato due volte. */}
+        <a href="#top" className="flex items-center" aria-label="Ideapubblica, torna in cima">
+          <Logo
+            tone="onDark"
+            gradientId="ip-logo-header"
+            withPayoff={false}
+            aria-hidden
+            role="presentation"
+            /* Il marchio si dimensiona sulla LARGHEZZA, non sull'altezza:
+               il simbolo è molto più alto della parola, quindi fissare
+               l'altezza rimpicciolisce troppo la scritta. */
+            className={`h-auto transition-all duration-300 ${scrolled ? "w-36" : "w-40"}`}
+          />
         </a>
 
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Navigazione principale">
