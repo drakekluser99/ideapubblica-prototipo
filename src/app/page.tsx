@@ -4,6 +4,7 @@ import Pillars from "@/components/Pillars";
 import Services from "@/components/Services";
 import SoftwareShowcase from "@/components/SoftwareShowcase";
 import Webinars from "@/components/Webinars";
+import Filodiretto from "@/components/Filodiretto";
 import Clients from "@/components/Clients";
 import Testimonials from "@/components/Testimonials";
 import ContactCTA from "@/components/ContactCTA";
@@ -28,6 +29,11 @@ export default function Home() {
         <Services />
         <SoftwareShowcase />
         <Webinars />
+        {/* Filodiretto sta dopo la Formazione perché è la sua evoluzione
+            continuativa: chi ha appena letto dei webinar è il pubblico
+            giusto per un abbonamento di affiancamento quotidiano.
+            La sezione legge gli ultimi articoli dal portale WordPress. */}
+        <Filodiretto />
         <Testimonials />
         <ContactCTA />
       </main>

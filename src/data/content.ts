@@ -8,6 +8,7 @@ export const nav = [
   { label: "Chi siamo", href: "#chi-siamo" },
   { label: "Servizi", href: "#servizi" },
   { label: "Formazione", href: "#formazione" },
+  { label: "Filodiretto", href: "#filodiretto" },
   { label: "Software", href: "#software" },
   { label: "Contatti", href: "#contatti" },
 ] as const;
@@ -145,6 +146,57 @@ export const softwareProducts = [
     features: ["Bandi filtrati per ente", "Avvisi sulle scadenze", "Schede di sintesi"],
   },
 ] as const;
+
+/*
+  FilodirettoRUP — il servizio in abbonamento che vive su un dominio proprio
+  (filodirettorup.ideapubblica.it, oggi WordPress).
+
+  Questo sito ne fa solo la VETRINA: presenta il servizio, mostra i titoli
+  degli ultimi articoli letti via API, e rimanda al portale per l'accesso.
+  Nessun contenuto riservato passa di qui — vedi src/lib/filodiretto.ts.
+
+  I prezzi non sono esposti sul portale: finché il cliente non li fornisce,
+  la scheda del piano si ferma al monte quesiti.
+*/
+export const filodiretto = {
+  eyebrow: "Filodiretto RUP",
+  titleLead: "L'affiancamento",
+  titleAccent: "quotidiano",
+  titleTail: "per i RUP.",
+  description:
+    "Un servizio dedicato a chi gestisce gare e contratti: poni un quesito operativo e ricevi una risposta personalizzata e tracciabile, con aggiornamenti costanti su norme, sentenze e prassi.",
+  portaleUrl: "https://filodirettorup.ideapubblica.it/",
+  accessoUrl: "https://filodirettorup.ideapubblica.it/accedi/",
+  // Esempi di quesiti reali, ripresi dalla vetrina pubblica del portale:
+  // servono a far capire il taglio del servizio meglio di ogni descrizione.
+  esempi: [
+    "Posso riaffidare lo stesso servizio all'operatore dell'anno scorso senza violare il principio di rotazione?",
+    "Il RUP può delegare alla commissione la verifica di anomalia?",
+    "In un appalto finanziato con fondi PNRR posso prorogare i termini di consegna?",
+  ],
+  piani: [
+    {
+      nome: "Silver",
+      quesiti: "10 quesiti",
+      tint: "blu",
+      voci: ["News periodiche", "Assistenza quotidiana", "Accesso allo storico dei quesiti"],
+    },
+    {
+      nome: "Gold",
+      quesiti: "25 quesiti",
+      tint: "ambra",
+      evidenza: true,
+      voci: [
+        "News periodiche",
+        "Assistenza quotidiana",
+        "Accesso allo storico dei quesiti",
+        "Servizio personalizzato",
+      ],
+    },
+  ],
+  newsTitolo: "Ultimi aggiornamenti",
+  newsNota: "Gli articoli completi sono riservati agli abbonati.",
+} as const;
 
 // Esempio di formato per i prossimi webinar: da collegare, in futuro, a un
 // calendario/CMS reale invece di una lista statica.

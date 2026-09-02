@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
-import { nav } from "@/data/content";
+import { LogIn, Menu, X } from "lucide-react";
+import { nav, filodiretto } from "@/data/content";
 import ShinyButton from "@/components/ui/shiny-button";
 import Logo from "@/components/ui/logo";
 import ThemeToggle from "@/components/ui/theme-toggle";
@@ -18,6 +18,11 @@ import ThemeToggle from "@/components/ui/theme-toggle";
   Il listener sullo scroll è passivo (`{ passive: true }`): dice al browser
   che non chiameremo mai preventDefault, così può continuare a scrollare
   senza aspettare il nostro codice.
+
+  Il link "Area riservata" porta al portale FilodirettoRUP, che è un sito
+  separato con i suoi accessi: è l'unica integrazione di autenticazione
+  necessaria fra i due. Le sessioni NON sono condivise, ed è voluto —
+  sottodomini distinti hanno cookie distinti e non si disturbano.
 */
 
 export default function Header() {
@@ -87,6 +92,19 @@ export default function Header() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
+          {/* Link esterno: apre il portale in una nuova scheda, così chi sta
+              leggendo il sito non perde il segno. `rel="noopener"` impedisce
+              alla pagina aperta di manipolare quella di partenza. */}
+          <a
+            href={filodiretto.accessoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-full px-4 py-3 text-sm font-medium text-fg-soft transition-colors hover:text-fg"
+          >
+            <LogIn size={15} aria-hidden />
+            Area riservata
+            <span className="sr-only">(si apre in una nuova scheda)</span>
+          </a>
           <ThemeToggle />
           <ShinyButton href="#contatti" className="!px-6 !py-3 !text-sm">
             Contattaci
@@ -116,7 +134,7 @@ export default function Header() {
       <div
         inert={!open}
         className={`overflow-hidden border-t border-line bg-surface/95 backdrop-blur-xl transition-[max-height,opacity] duration-300 lg:hidden ${
-          open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          open ? "max-h-[32rem] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <nav
@@ -133,6 +151,17 @@ export default function Header() {
               {item.label}
             </a>
           ))}
+          <a
+            href={filodiretto.accessoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setOpen(false)}
+            className="inline-flex items-center gap-2 rounded-xl px-3 py-3 text-base font-medium text-fg-soft transition-colors hover:bg-fg/5 hover:text-fg"
+          >
+            <LogIn size={16} aria-hidden />
+            Area riservata
+            <span className="sr-only">(si apre in una nuova scheda)</span>
+          </a>
           <a
             href="#contatti"
             onClick={() => setOpen(false)}
