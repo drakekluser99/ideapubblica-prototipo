@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { services } from "@/data/content";
 import SectionHeading from "@/components/ui/section-heading";
@@ -15,6 +16,11 @@ import { tinte } from "@/components/ui/tints";
   Il layout è una lista, non una griglia di card: sei card tutte uguali
   sembrano un catalogo anonimo, mentre righe con numerazione grande hanno un
   taglio editoriale e si scorrono più in fretta.
+
+  Da quando esiste /servizi questa sezione è un'ANTEPRIMA: ogni riga porta
+  alla scheda corrispondente sulla pagina interna, non più al form contatti.
+  La regola è che un link mantenga la promessa del titolo — chi clicca
+  "PEF rifiuti" si aspetta di leggere del PEF rifiuti, non un modulo.
 */
 export default function Services() {
   return (
@@ -34,22 +40,22 @@ export default function Services() {
           />
 
           <Reveal delay={120}>
-            <a
-              href="#contatti"
+            <Link
+              href="/servizi"
               className="inline-flex items-center gap-2 rounded-full border border-band-line px-6 py-3 text-sm font-semibold text-band-fg transition-colors hover:bg-band-fg hover:text-band"
             >
-              Richiedi una consulenza
-              <ArrowUpRight size={16} />
-            </a>
+              Tutte le aree di competenza
+              <ArrowUpRight size={16} aria-hidden />
+            </Link>
           </Reveal>
         </div>
 
         <ul className="mt-14 border-t border-band-line">
           {services.map((service, i) => (
-            <Reveal key={service.name} delay={i * 70}>
+            <Reveal key={service.slug} delay={i * 70}>
               <li className={`group border-b border-band-line ${tinte[service.tint]}`}>
-                <a
-                  href="#contatti"
+                <Link
+                  href={`/servizi#${service.slug}`}
                   className="grid items-start gap-4 py-7 transition-colors sm:grid-cols-[3.5rem_1fr_auto] sm:gap-6"
                 >
                   {/* Numerazione: String(i+1).padStart(2,"0") dà 01, 02, ...
@@ -71,9 +77,9 @@ export default function Services() {
                   </div>
 
                   <span className="hidden h-10 w-10 items-center justify-center rounded-full border border-band-line text-band-fg transition-all duration-300 group-hover:tinta-bordo group-hover:tinta-fondo group-hover:tinta-testo sm:flex">
-                    <ArrowUpRight size={16} />
+                    <ArrowUpRight size={16} aria-hidden />
                   </span>
-                </a>
+                </Link>
               </li>
             </Reveal>
           ))}

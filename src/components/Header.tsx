@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { LogIn, Menu, X } from "lucide-react";
 import { nav, filodiretto } from "@/data/content";
 import ShinyButton from "@/components/ui/shiny-button";
@@ -12,17 +13,23 @@ import ThemeToggle from "@/components/ui/theme-toggle";
 
   In cima alla pagina è trasparente e "alto", così l'hero respira. Appena si
   scrolla oltre 24px diventa più compatto, prende un fondo sfocato e una
-  linea di separazione. È un dettaglio piccolo ma è quello che fa percepire
-  il sito come "applicativo" e non come brochure statica.
+  linea di separazione.
 
   Il listener sullo scroll è passivo (`{ passive: true }`): dice al browser
   che non chiameremo mai preventDefault, così può continuare a scrollare
   senza aspettare il nostro codice.
 
-  Il link "Area riservata" porta al portale FilodirettoRUP, che è un sito
-  separato con i suoi accessi: è l'unica integrazione di autenticazione
-  necessaria fra i due. Le sessioni NON sono condivise, ed è voluto —
-  sottodomini distinti hanno cookie distinti e non si disturbano.
+  --- Perché <Link> e non <a> ----------------------------------------------
+
+  Da quando esistono pagine interne, la navigazione avviene fra rotte diverse.
+  `<a href="/servizi">` funziona, ma scarica e ricostruisce l'intera pagina.
+  `<Link>` di Next fa una navigazione lato client: sostituisce solo ciò che
+  cambia, mantiene lo stato di React, e precarica in sottofondo la rotta
+  quando il link entra nello schermo. Gestisce anche le àncore ("/#software"):
+  naviga alla home e poi scorre.
+
+  I link ESTERNI (il portale Filodiretto) restano <a>: Next non può
+  precaricare né gestire lato client un altro sito.
 */
 
 export default function Header() {
@@ -58,12 +65,10 @@ export default function Header() {
       >
         {/* Il logo è già l'etichetta del link, quindi l'SVG viene nascosto
             ai lettori di schermo (aria-hidden) e il nome lo dà l'anchor:
-            altrimenti verrebbe annunciato due volte. */}
-        <a
-          href="#top"
-          className="flex items-center"
-          aria-label="Ideapubblica, torna in cima"
-        >
+            altrimenti verrebbe annunciato due volte.
+            Punta a "/" e non più a "#top": dalle pagine interne deve
+            riportare alla home, non a inizio pagina corrente. */}
+        <Link href="/" className="flex items-center" aria-label="Ideapubblica, vai alla home">
           <Logo
             gradientId="ip-logo-header"
             withPayoff={false}
@@ -74,20 +79,17 @@ export default function Header() {
                l'altezza rimpicciolisce troppo la scritta. */
             className={`h-auto transition-all duration-300 ${scrolled ? "w-36" : "w-40"}`}
           />
-        </a>
+        </Link>
 
-        <nav
-          className="hidden items-center gap-1 lg:flex"
-          aria-label="Navigazione principale"
-        >
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Navigazione principale">
           {nav.map((item) => (
-            <a
+            <Link
               key={item.href}
               href={item.href}
               className="relative rounded-full px-4 py-3 text-sm font-medium text-fg-soft transition-colors hover:text-fg focus-visible:text-fg"
             >
               {item.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -106,7 +108,7 @@ export default function Header() {
             <span className="sr-only">(si apre in una nuova scheda)</span>
           </a>
           <ThemeToggle />
-          <ShinyButton href="#contatti" className="!px-6 !py-3 !text-sm">
+          <ShinyButton href="/#contatti" className="!px-6 !py-3 !text-sm">
             Contattaci
           </ShinyButton>
         </div>
@@ -129,27 +131,23 @@ export default function Header() {
           così la transizione è animabile. */}
       {/* `inert` è la parte importante: senza, i link del pannello chiuso
           restano nell'ordine di tabulazione, e chi naviga da tastiera finisce
-          su elementi invisibili. `inert` li toglie dal focus e dai lettori di
-          schermo mantenendo l'animazione dell'altezza. */}
+          su elementi invisibili. */}
       <div
         inert={!open}
         className={`overflow-hidden border-t border-line bg-surface/95 backdrop-blur-xl transition-[max-height,opacity] duration-300 lg:hidden ${
           open ? "max-h-[32rem] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <nav
-          className="shell flex flex-col gap-1 py-5"
-          aria-label="Navigazione mobile"
-        >
+        <nav className="shell flex flex-col gap-1 py-5" aria-label="Navigazione mobile">
           {nav.map((item) => (
-            <a
+            <Link
               key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
               className="rounded-xl px-3 py-3 text-base font-medium text-fg-soft transition-colors hover:bg-fg/5 hover:text-fg"
             >
               {item.label}
-            </a>
+            </Link>
           ))}
           <a
             href={filodiretto.accessoUrl}
@@ -162,13 +160,13 @@ export default function Header() {
             Area riservata
             <span className="sr-only">(si apre in una nuova scheda)</span>
           </a>
-          <a
-            href="#contatti"
+          <Link
+            href="/#contatti"
             onClick={() => setOpen(false)}
             className="mt-2 rounded-full bg-accent px-5 py-3 text-center text-sm font-semibold text-accent-ink"
           >
             Contattaci
-          </a>
+          </Link>
         </nav>
       </div>
     </header>
