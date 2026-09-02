@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight, Check, FileText } from "lucide-react";
-import { services, servicesPage } from "@/data/content";
+import { ArrowUpRight } from "lucide-react";
+import {
+  serviceCategories,
+  serviziDiCategoria,
+  servicesPage,
+  linkServizio,
+} from "@/data/services";
 import { tinte, type Tinta } from "@/components/ui/tints";
 import PageHero from "@/components/ui/page-hero";
 import Reveal from "@/components/ui/reveal";
@@ -10,28 +15,23 @@ import ContactCTA from "@/components/ContactCTA";
 import Footer from "@/components/Footer";
 
 /*
-  /servizi — pagina unica con un'àncora per ciascuna delle sei aree.
+  /servizi — indice per aree.
 
-  Perché una pagina sola e non sei: con il materiale disponibile ogni area
-  riempie mezza schermata. Sei pagine da mezza schermata sono peggio di una
-  pagina densa, sia da leggere sia per i motori di ricerca, che premiano una
-  pagina autorevole e penalizzano il contenuto sottile ripetuto.
+  Non è più un elenco piatto di sei voci ma la mappa dell'offerta: sei
+  categorie, ciascuna con i propri servizi. Rispecchia il menu a tendina, e
+  chi ci arriva da una ricerca vede subito l'ampiezza del catalogo.
 
-  Lo slug però è già nei dati: il giorno in cui un'area avrà contenuto
-  proprio, /servizi#pef-rifiuti diventa /servizi/pef-rifiuti senza dover
-  reinventare gli indirizzi.
+  Le voci che hanno una pagina di dettaglio ci portano; le altre restano
+  righe informative dell'indice. Lo decide `linkServizio` in data/services.ts,
+  non questo componente: qui non c'è nessun `if` sulla presenza del
+  dettaglio, e il giorno in cui una voce ne acquista uno il link cambia da
+  solo.
 */
 
-/*
-  `metadata` esportato da un file di pagina dice a Next cosa mettere in
-  <head> per QUESTA rotta: sovrascrive i valori del layout radice. Senza,
-  ogni pagina erediterebbe titolo e descrizione della home — e nei risultati
-  di ricerca comparirebbero tutte uguali.
-*/
 export const metadata: Metadata = {
   title: "Servizi per gli enti locali — Ideapubblica",
   description:
-    "Bilancio consolidato e partecipate, PEF rifiuti con metodo ARERA, privacy e DPO, contabilità economico-patrimoniale, controllo di gestione, anticorruzione e trasparenza.",
+    "Contabilità e programmazione, bilancio consolidato e partecipate, privacy e anticorruzione, ARERA e tributi, performance del personale, ottimizzazione dell'ente.",
 };
 
 export default function ServiziPage() {
@@ -57,29 +57,20 @@ export default function ServiziPage() {
 
         <section className="pb-24 sm:pb-32">
           <div className="shell grid gap-12 lg:grid-cols-[15rem_1fr] lg:gap-16">
-            {/*
-              Indice laterale.
-
-              `sticky top-28` lo tiene visibile mentre si scorre: su una
-              pagina lunga è il modo più economico per non far perdere
-              l'orientamento. Sotto lg diventa una lista normale in cima,
-              perché una colonna appiccicata su schermo stretto ruba spazio
-              al contenuto.
-            */}
             <aside className="lg:sticky lg:top-28 lg:self-start">
-              <h2 className="eyebrow mb-4 text-fg-faint">{servicesPage.indiceTitolo}</h2>
+              <h2 className="eyebrow mb-4 text-fg-faint">Aree di competenza</h2>
               <nav aria-label="Indice delle aree di competenza">
                 <ol className="flex flex-col gap-1">
-                  {services.map((servizio, i) => (
-                    <li key={servizio.slug}>
+                  {serviceCategories.map((categoria, i) => (
+                    <li key={categoria.slug}>
                       <a
-                        href={`#${servizio.slug}`}
+                        href={`#${categoria.slug}`}
                         className="flex items-start gap-3 rounded-xl px-3 py-2.5 text-sm text-fg-soft transition-colors hover:bg-fg/5 hover:text-fg"
                       >
-                        <span className="text-xs text-fg-faint tabular-nums">
+                        <span className="text-xs tabular-nums text-fg-faint">
                           {String(i + 1).padStart(2, "0")}
                         </span>
-                        {servizio.name}
+                        {categoria.nome}
                       </a>
                     </li>
                   ))}
@@ -88,76 +79,58 @@ export default function ServiziPage() {
             </aside>
 
             <div className="flex flex-col gap-6">
-              {services.map((servizio, i) => (
-                <Reveal key={servizio.slug} delay={i * 60}>
-                  {/*
-                    `scroll-mt-28` è il dettaglio che quasi sempre si dimentica:
-                    l'header è fisso, quindi saltando a un'àncora il titolo
-                    finirebbe NASCOSTO sotto la barra. Questa utility dice al
-                    browser di fermarsi 7rem più in alto.
-                  */}
-                  <article
-                    id={servizio.slug}
-                    className={`${tinte[servizio.tint as Tinta]} glass scroll-mt-28 rounded-3xl p-7 sm:p-9`}
-                  >
-                    <div className="flex flex-wrap items-center gap-3">
-                      <span className="display text-2xl text-fg-faint tabular-nums">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <span className="tinta-fondo tinta-testo rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-wide uppercase">
-                        {servizio.tag}
-                      </span>
-                    </div>
+              {serviceCategories.map((categoria, i) => {
+                const servizi = serviziDiCategoria(categoria.slug);
 
-                    {/* h2: l'h1 della pagina è nel PageHero. */}
-                    <h2 className="display mt-3 text-2xl text-fg sm:text-3xl">{servizio.name}</h2>
-
-                    <p className="mt-4 max-w-2xl text-base leading-relaxed text-fg-soft">
-                      {servizio.intro}
-                    </p>
-
-                    <div className="mt-8 grid gap-8 sm:grid-cols-2">
-                      <div>
-                        <h3 className="eyebrow mb-4 tinta-testo">{servicesPage.attivitaTitolo}</h3>
-                        <ul className="flex flex-col gap-2.5">
-                          {servizio.attivita.map((voce) => (
-                            <li key={voce} className="flex items-start gap-2.5 text-sm leading-relaxed text-fg-soft">
-                              <Check size={15} className="tinta-testo mt-0.5 shrink-0" aria-hidden />
-                              {voce}
-                            </li>
-                          ))}
-                        </ul>
+                return (
+                  <Reveal key={categoria.slug} delay={i * 60}>
+                    {/* scroll-mt-28: l'header è fisso, senza questo il titolo
+                        finirebbe nascosto sotto la barra saltando all'àncora. */}
+                    <section
+                      id={categoria.slug}
+                      className={`${tinte[categoria.tint as Tinta]} glass scroll-mt-28 rounded-3xl p-7 sm:p-9`}
+                    >
+                      <div className="flex flex-wrap items-baseline gap-3">
+                        <span className="display text-2xl tabular-nums text-fg-faint">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        <h2 className="display text-2xl text-fg sm:text-3xl">{categoria.nome}</h2>
                       </div>
 
-                      <div>
-                        <h3 className="eyebrow mb-4 text-fg-faint">{servicesPage.risultatiTitolo}</h3>
-                        <ul className="flex flex-col gap-2.5">
-                          {servizio.risultati.map((voce) => (
-                            <li key={voce} className="flex items-start gap-2.5 text-sm leading-relaxed text-fg-soft">
-                              <FileText size={15} className="mt-0.5 shrink-0 text-fg-faint" aria-hidden />
-                              {voce}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-
-                    <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-5">
-                      <p className="text-xs text-fg-faint">
-                        <span className="sr-only">{servicesPage.riferimentiTitolo}: </span>
-                        {servizio.riferimenti}
+                      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-fg-soft sm:text-base">
+                        {categoria.sommario}
                       </p>
-                      <Link
-                        href="/#contatti"
-                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent-soft transition-transform duration-300 hover:translate-x-1"
-                      >
-                        Parlane con noi
-                        <ArrowUpRight size={15} aria-hidden />
-                      </Link>
-                    </div>
-                  </article>
-                </Reveal>
-              ))}
+
+                      <ul className="mt-7 grid gap-2 sm:grid-cols-2">
+                        {servizi.map((servizio) => (
+                          <li key={servizio.slug}>
+                            <Link
+                              href={linkServizio(servizio)}
+                              className="group flex h-full items-start gap-3 rounded-2xl border border-line bg-card/40 p-4 transition-colors hover:tinta-bordo"
+                            >
+                              <span className="min-w-0 flex-1">
+                                <span className="block text-sm font-semibold text-fg">
+                                  {servizio.nome}
+                                </span>
+                                <span className="mt-1 block text-xs leading-relaxed text-fg-soft">
+                                  {servizio.sommario}
+                                </span>
+                              </span>
+                              {servizio.dettaglio ? (
+                                <ArrowUpRight
+                                  size={15}
+                                  aria-hidden
+                                  className="tinta-testo mt-0.5 shrink-0 transition-transform duration-300 group-hover:translate-x-0.5"
+                                />
+                              ) : null}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  </Reveal>
+                );
+              })}
 
               <p className="mt-2 text-xs leading-relaxed text-fg-faint">{servicesPage.nota}</p>
             </div>

@@ -1,26 +1,21 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { services } from "@/data/content";
+import { serviceCategories, serviziDiCategoria } from "@/data/services";
 import SectionHeading from "@/components/ui/section-heading";
 import Reveal from "@/components/ui/reveal";
-import { tinte } from "@/components/ui/tints";
+import { tinte, type Tinta } from "@/components/ui/tints";
 
 /*
-  Servizi — l'unica sezione chiara della pagina.
+  Servizi in home — l'unica sezione chiara della pagina.
 
   Serve a due cose. Prima: ritmo. Dieci schermate di blu notte di fila
   stancano; una fascia chiara a metà pagina fa "respirare" e segna un
-  capitolo nuovo. Seconda: leggibilità. Qui c'è l'elenco più denso di testo
-  del sito, e il testo scuro su fondo chiaro resta più comodo da scorrere.
+  capitolo nuovo. Seconda: leggibilità, perché qui c'è l'elenco più denso.
 
-  Il layout è una lista, non una griglia di card: sei card tutte uguali
-  sembrano un catalogo anonimo, mentre righe con numerazione grande hanno un
-  taglio editoriale e si scorrono più in fretta.
-
-  Da quando esiste /servizi questa sezione è un'ANTEPRIMA: ogni riga porta
-  alla scheda corrispondente sulla pagina interna, non più al form contatti.
-  La regola è che un link mantenga la promessa del titolo — chi clicca
-  "PEF rifiuti" si aspetta di leggere del PEF rifiuti, non un modulo.
+  Mostra le sei AREE, non i 29 servizi: in home serve far capire l'ampiezza
+  dell'offerta in dieci secondi, non elencarla. Il catalogo completo sta su
+  /servizi e nel menu a tendina. Il conteggio accanto a ogni area è il modo
+  più economico per dire "qui sotto c'è altro" senza scriverlo.
 */
 export default function Services() {
   return (
@@ -51,38 +46,44 @@ export default function Services() {
         </div>
 
         <ul className="mt-14 border-t border-band-line">
-          {services.map((service, i) => (
-            <Reveal key={service.slug} delay={i * 70}>
-              <li className={`group border-b border-band-line ${tinte[service.tint]}`}>
-                <Link
-                  href={`/servizi#${service.slug}`}
-                  className="grid items-start gap-4 py-7 transition-colors sm:grid-cols-[3.5rem_1fr_auto] sm:gap-6"
-                >
-                  {/* Numerazione: String(i+1).padStart(2,"0") dà 01, 02, ...
-                      Piccolo dettaglio che rende la lista un "indice". */}
-                  <span className="display text-2xl text-band-fg/45 transition-colors group-hover:tinta-testo">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
+          {serviceCategories.map((categoria, i) => {
+            const quanti = serviziDiCategoria(categoria.slug).length;
 
-                  <div>
-                    <div className="flex flex-wrap items-center gap-3">
-                      <h3 className="display text-xl text-band-fg sm:text-2xl">{service.name}</h3>
-                      <span className="tinta-fondo tinta-testo rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-wide uppercase">
-                        {service.tag}
-                      </span>
+            return (
+              <Reveal key={categoria.slug} delay={i * 70}>
+                <li className={`group border-b border-band-line ${tinte[categoria.tint as Tinta]}`}>
+                  <Link
+                    href={`/servizi#${categoria.slug}`}
+                    className="grid items-start gap-4 py-7 transition-colors sm:grid-cols-[3.5rem_1fr_auto] sm:gap-6"
+                  >
+                    {/* String(i+1).padStart(2,"0") dà 01, 02, ...
+                        Piccolo dettaglio che rende la lista un "indice". */}
+                    <span className="display text-2xl tabular-nums text-band-fg/45 transition-colors group-hover:tinta-testo">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+
+                    <div>
+                      <div className="flex flex-wrap items-center gap-3">
+                        <h3 className="display text-xl text-band-fg sm:text-2xl">
+                          {categoria.nome}
+                        </h3>
+                        <span className="tinta-fondo tinta-testo rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-wide uppercase">
+                          {quanti} {quanti === 1 ? "servizio" : "servizi"}
+                        </span>
+                      </div>
+                      <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-band-fg-soft">
+                        {categoria.sommario}
+                      </p>
                     </div>
-                    <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-band-fg-soft">
-                      {service.description}
-                    </p>
-                  </div>
 
-                  <span className="hidden h-10 w-10 items-center justify-center rounded-full border border-band-line text-band-fg transition-all duration-300 group-hover:tinta-bordo group-hover:tinta-fondo group-hover:tinta-testo sm:flex">
-                    <ArrowUpRight size={16} aria-hidden />
-                  </span>
-                </Link>
-              </li>
-            </Reveal>
-          ))}
+                    <span className="hidden h-10 w-10 items-center justify-center rounded-full border border-band-line text-band-fg transition-all duration-300 group-hover:tinta-bordo group-hover:tinta-fondo group-hover:tinta-testo sm:flex">
+                      <ArrowUpRight size={16} aria-hidden />
+                    </span>
+                  </Link>
+                </li>
+              </Reveal>
+            );
+          })}
         </ul>
       </div>
     </section>
