@@ -43,6 +43,8 @@ Gli avvisi `LF will be replaced by CRLF` sono normali su Windows.
 
 Per verificare se l'online è aggiornato non guardare la pagina: confronta `git log --oneline -1` con `git log --oneline -1 origin/main`. Un fetch testuale della pagina scarta i `<button>`, e fa sembrare assenti elementi che ci sono.
 
+**Configurazione fuori dal codice.** `.env.example` elenca le variabili esistenti e va committato; i valori veri stanno nel pannello di Vercel e, in locale, in un `.env.local` che git ignora. Il prefisso `NEXT_PUBLIC_` significa "arriva anche nel browser": mai usarlo per un segreto.
+
 **`AGENTS.md` e `CLAUDE.md` in radice vengono riscritti da `next dev`.** Il blocco che Next inserisce va committato insieme al lavoro, altrimenti riappare come modifica non tracciata a ogni avvio. Non cancellarlo dal diff.
 
 ---
@@ -78,6 +80,8 @@ src/
 **Regola architetturale: i dati sono dati puri.** `content.ts` e `services.ts` non importano componenti né colori — contengono chiavi (`icon: "network"`, `tint: "viola"`) che i componenti traducono. Il codice che fa chiamate di rete sta in `lib/`, non in `data/`.
 
 **Le sezioni si riusano, non si copiano.** `ContactCTA` chiude ogni pagina interna; `Webinars` sta in home e in `/formazione`; `SoftwareShowcase` in home e in `/software`. Duplicarne il markup è la scorciatoia che dopo tre mesi produce due pagine che dicono cose diverse. Quando una sezione serve in due posti con un titolo diverso, si aggiunge una prop, non un secondo file.
+
+In radice, oltre ai file di configurazione: `.env.example` (variabili disponibili), `GUIDA.md`, `HANDOFF.md`, e la cartella `Claude outputs/` ignorata da git.
 
 Nella radice c'è anche **`GUIDA.md`**, il manuale per il cliente: come si aggiorna il sito, come si cambia l'estetica, come si accende GTM, e le domande ricorrenti nel passaggio da WordPress. È l'unico documento pensato per chi non scrive codice — tenerlo tale.
 
@@ -138,8 +142,10 @@ Tutto in `src/app/globals.css`, a blocchi numerati.
 23. **Il valore iniziale di una `@property` è cieco rispetto al tema.** `--gradient-shine` partiva bianco: giusto sul fondo scuro, invisibile sul chiaro. Il valore di partenza lo deve dare un token del tema.
 24. **Una luce si vede se è più chiara di ciò che ha intorno.** Sul tema chiaro il bordo animato del CTA non si vedeva: parti spente `transparent` (cioè pagina bianca) e arco azzurro chiarissimo. Sul chiaro la polarità va **invertita** — anello tenue a riposo, arco di colore pieno che ci corre sopra — e lo spessore alzato a 1,5 px. Vale per qualunque effetto "luminoso" portato da un tema all'altro.
 25. **Il server locale può servire un build vecchio.** `npx next start` non si aggiorna da solo dopo un `npm run build`, e se la porta 3000 è occupata il processo nuovo muore in silenzio lasciando in piedi il vecchio. Sintomo tipico: il browser rifiuta un chunk con *"MIME type ('text/plain') is not executable"*, perché quel file non esiste più e `nosniff` blocca la risposta di errore. **Prima di ogni verifica: chiudere i processi `next-server`, ricostruire, riavviare.** Due diagnosi sono state sballate da questo.
-27. **`localStorage` non si legge in un `useEffect` con `setState`** — è la trappola 3 sotto altra forma, più il rischio di hydration mismatch, perché il server quel valore non ce l'ha. Lo strumento giusto è `useSyncExternalStore`, che prende due lettori (uno per il server, uno per il browser): vedi `ui/consenso.tsx`. In più permette di ascoltare l'evento `storage` e aggiornare le altre schede aperte.
-26. **`contabilità economico-patrimoniale` va col trattino** (D.Lgs. 118/2011). Il sito attuale lo scrive senza; noi no. Gli slug restano quelli vecchi: cambiare il nome visualizzato non tocca l'URL.
+26. **`localStorage` non si legge in un `useEffect` con `setState`** — è la trappola 3 sotto altra forma, più il rischio di hydration mismatch, perché il server quel valore non ce l'ha. Lo strumento giusto è `useSyncExternalStore`, che prende due lettori (uno per il server, uno per il browser): vedi `ui/consenso.tsx`. In più permette di ascoltare l'evento `storage` e aggiornare le altre schede aperte.
+27. **`contabilità economico-patrimoniale` va col trattino** (D.Lgs. 118/2011). Il sito attuale lo scrive senza; noi no. Gli slug restano quelli vecchi: cambiare il nome visualizzato non tocca l'URL.
+28. **Quello che entra in un commit e viene pushato non si toglie più facilmente.** Un `--amend` seguito da `push --force-with-lease` sostituisce l'ultimo commit, ma quello vecchio resta nella storia. Per uno screenshot è irrilevante; **se finisce lì una password o una chiave API la cosa da fare non è cancellarla dalla storia, è revocarla** — va considerata compromessa dal momento del push. Preferire sempre `--force-with-lease` a `--force`: forza solo se sul remoto c'è ancora quello che ci si aspetta.
+29. **La cartella `Claude outputs/` è ignorata da git** ed è dove atterrano i file consegnati dall'assistente (screenshot, PDF). Ci è finita dentro per sbaglio una volta: se ricompare fra i file da committare, controllare `.gitignore`.
 
 ---
 
@@ -223,6 +229,22 @@ Il dizionario italiano di hunspell è in ISO-8859-1: passandogli UTF-8 le parole
 Un dizionario trova i refusi di battitura, **non** gli errori veri: quelli si trovano leggendo. I tre di questo progetto erano «si tira in somma», il trattino mancante in *economico-patrimoniale* e le virgolette aperte e mai chiuse.
 
 Nel JSX gli apostrofi vanno scritti `&apos;` (la regola eslint `react/no-unescaped-entities` blocca quello nudo). Usare sempre `&apos;`, mai `&rsquo;`: mescolarli dà due glifi diversi nella stessa pagina.
+
+---
+
+## 9-bis. Materiali per il cliente
+
+Due, e hanno pubblici diversi:
+
+- **`GUIDA.md`** (nel repo) — il manuale scritto: come si aggiorna il sito, come si cambia l'estetica, come si accende GTM, e le domande ricorrenti del passaggio da WordPress. Si legge formattato su GitHub, ed è il link da girare.
+- **`Claude outputs/Ideapubblica-nuovo-sito.pdf`** — 24 slide in formato 16:9, da allegare a una mail. Fuori dal repo di proposito: è un binario che verrebbe rigenerato spesso, e ogni versione peserebbe per sempre nella storia di git.
+
+**Come è stata prodotta la presentazione**, se serve rifarla: un unico file HTML con una `<section>` per slide da 1280×720, i caratteri del sito caricati da `@font-face` con percorsi relativi, gli screenshot catturati dal sito in esecuzione con Playwright e compressi in JPEG (da 5,9 a 1,6 MB), infine `page.pdf()` di Playwright con `width/height` in pixel e margini a zero.
+
+Due accorgimenti che valgono per qualunque documento generato così:
+
+- **compilare le slide non basta, vanno misurate.** Uno script che per ogni sezione confronta il fondo di ogni elemento figlio con il fondo della slide ha trovato uno sforamento di 31 px invisibile sulle miniature — la nota finale finiva fuori dal foglio;
+- **le immagini vanno compresse prima**, non dopo: un PDF da allegare a una mail deve stare sotto i due megabyte, e con gli screenshot a piena risoluzione ne pesava sei.
 
 ---
 
