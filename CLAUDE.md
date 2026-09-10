@@ -56,6 +56,7 @@ src/
     layout.tsx               metadata + script inline (classe "js", tema) + ScrollManager
     page.tsx                 home: composizione delle sezioni
     chi-siamo/page.tsx       azienda + manifesto
+    cookie/page.tsx          cosa il sito salva sul dispositivo (descrizione tecnica)
     formazione/page.tsx      metodo, formati, appuntamenti, docenti
     software/page.tsx        formula "software come servizio" + catalogo
     servizi/page.tsx         indice dei servizi per area
@@ -71,12 +72,14 @@ src/
     Webinars Filodiretto Testimonials ContactCTA Footer
     ui/  shiny-button reveal counter marquee section-heading logo
          network-visual social-icons theme-toggle tints
-         page-hero service-request scroll-manager
+         page-hero service-request scroll-manager consenso
 ```
 
 **Regola architetturale: i dati sono dati puri.** `content.ts` e `services.ts` non importano componenti né colori — contengono chiavi (`icon: "network"`, `tint: "viola"`) che i componenti traducono. Il codice che fa chiamate di rete sta in `lib/`, non in `data/`.
 
 **Le sezioni si riusano, non si copiano.** `ContactCTA` chiude ogni pagina interna; `Webinars` sta in home e in `/formazione`; `SoftwareShowcase` in home e in `/software`. Duplicarne il markup è la scorciatoia che dopo tre mesi produce due pagine che dicono cose diverse. Quando una sezione serve in due posti con un titolo diverso, si aggiunge una prop, non un secondo file.
+
+Nella radice c'è anche **`GUIDA.md`**, il manuale per il cliente: come si aggiorna il sito, come si cambia l'estetica, come si accende GTM, e le domande ricorrenti nel passaggio da WordPress. È l'unico documento pensato per chi non scrive codice — tenerlo tale.
 
 Nella radice c'è anche `HANDOFF.md`, versione più discorsiva di questo documento. Se si aggiorna uno, aggiornare l'altro o eliminare il ridondante.
 
@@ -135,6 +138,7 @@ Tutto in `src/app/globals.css`, a blocchi numerati.
 23. **Il valore iniziale di una `@property` è cieco rispetto al tema.** `--gradient-shine` partiva bianco: giusto sul fondo scuro, invisibile sul chiaro. Il valore di partenza lo deve dare un token del tema.
 24. **Una luce si vede se è più chiara di ciò che ha intorno.** Sul tema chiaro il bordo animato del CTA non si vedeva: parti spente `transparent` (cioè pagina bianca) e arco azzurro chiarissimo. Sul chiaro la polarità va **invertita** — anello tenue a riposo, arco di colore pieno che ci corre sopra — e lo spessore alzato a 1,5 px. Vale per qualunque effetto "luminoso" portato da un tema all'altro.
 25. **Il server locale può servire un build vecchio.** `npx next start` non si aggiorna da solo dopo un `npm run build`, e se la porta 3000 è occupata il processo nuovo muore in silenzio lasciando in piedi il vecchio. Sintomo tipico: il browser rifiuta un chunk con *"MIME type ('text/plain') is not executable"*, perché quel file non esiste più e `nosniff` blocca la risposta di errore. **Prima di ogni verifica: chiudere i processi `next-server`, ricostruire, riavviare.** Due diagnosi sono state sballate da questo.
+27. **`localStorage` non si legge in un `useEffect` con `setState`** — è la trappola 3 sotto altra forma, più il rischio di hydration mismatch, perché il server quel valore non ce l'ha. Lo strumento giusto è `useSyncExternalStore`, che prende due lettori (uno per il server, uno per il browser): vedi `ui/consenso.tsx`. In più permette di ascoltare l'evento `storage` e aggiornare le altre schede aperte.
 26. **`contabilità economico-patrimoniale` va col trattino** (D.Lgs. 118/2011). Il sito attuale lo scrive senza; noi no. Gli slug restano quelli vecchi: cambiare il nome visualizzato non tocca l'URL.
 
 ---
@@ -188,6 +192,20 @@ Gli header stanno in `next.config.ts`: **Content-Security-Policy**, `Referrer-Po
 **Limite noto e voluto:** `script-src` include `'unsafe-inline'`. Next mette in pagina decine di script in linea (payload dei Server Components, script del tema in `layout.tsx`) e toglierli richiede un nonce per richiesta, quindi un middleware, quindi rinunciare alle pagine statiche servite da CDN. Per un sito vetrina il cambio non conviene; **se nascerà un'area con dati veri, è la prima cosa da rivedere.** Il resto della policy resta efficace: niente framing, niente script da altri domini, niente dirottamento dei form.
 
 **Quando si collegherà l'invio dei moduli:** validazione lato server, rate limit per IP, scarto silenzioso se l'honeypot è pieno, nessun dato dell'utente rimandato nella risposta, e attenzione all'iniezione di intestazioni email nei campi liberi.
+
+---
+
+## 8-bis. Analytics e consenso
+
+**Il sito non traccia nessuno finché `NEXT_PUBLIC_GTM_ID` è vuota**, ed è lo stato attuale. La variabile governa tre cose insieme: il caricamento di GTM, la comparsa del banner cookie e i permessi verso Google nella CSP. Nessun ID → niente script, niente banner, CSP invariata.
+
+`ui/consenso.tsx` monta `<GoogleTagManager>` **solo dopo un consenso esplicito**. Non è una precauzione facoltativa: in Italia GA4 richiede il consenso preventivo (art. 122 Codice privacy) e il Garante chiede il *blocco preventivo* — gli script non vanno caricati e poi disattivati, vanno non caricati. Si verifica guardando il traffico di rete senza toccare il banner: verso `googletagmanager.com` non deve partire niente. Lo script `verifica-gtm.mjs` fa esattamente questo controllo.
+
+**I permessi CSP per Google si aggiungono solo se l'ID c'è** (`next.config.ts` legge la variabile in fase di build). Conseguenza: **cambiando la variabile su Vercel serve un nuovo deploy**, altrimenti gli header restano quelli vecchi e il browser blocca GTM. E un tag configurato dentro GTM che chiami un servizio diverso (pixel Meta, mappe, YouTube) va aggiunto a mano alla CSP, altrimenti non parte.
+
+**Il banner ha una sola categoria.** Con più categorie servono un pulsante "Personalizza" e una CMP vera (Iubenda, CookieYes, MyAgilePrivacy): non far crescere `consenso.tsx`.
+
+La pagina `/cookie` descrive il comportamento tecnico reale e si adatta da sola alla presenza dell'ID. **Non è l'informativa privacy** e non deve diventarlo.
 
 ---
 

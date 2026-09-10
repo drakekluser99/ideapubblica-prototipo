@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import ScrollManager from "@/components/ui/scroll-manager";
+import Consenso from "@/components/ui/consenso";
 
 // Tipografia: Instrument Sans (titoli) + Inter (testo), auto-ospitati con i
 // pacchetti @fontsource-variable importati in globals.css. Rispetto a
@@ -47,6 +48,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             commento lungo dentro il componente. */}
         <ScrollManager />
         {children}
+        {/* Banner cookie + Google Tag Manager. Se non è configurato nessun
+            ID contenitore non disegna niente e non carica niente: oggi il
+            sito è in questo stato. Vedi il commento in testa al file. */}
+        <Consenso />
       </body>
     </html>
   );

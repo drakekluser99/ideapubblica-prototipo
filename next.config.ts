@@ -56,13 +56,63 @@ import type { NextConfig } from "next";
   servizio esterno (una mappa, un video incorporato, un tracker) va aggiunto
   anche qui, altrimenti non funziona e la ragione si vede solo in console.
 */
+/*
+  I permessi per Google Tag Manager si aggiungono SOLO se GTM è configurato.
+
+  Una CSP è una lista di permessi, e ogni permesso è una porta lasciata
+  aperta: tenere `googletagmanager.com` fra le origini consentite mentre GTM
+  non viene usato indebolisce la policy in cambio di niente. Con la lettura
+  della variabile d'ambiente qui, la porta si apre nello stesso momento in
+  cui serve e si richiude se un domani GTM viene tolto — senza che nessuno
+  debba ricordarsene.
+
+  Funziona perché `next.config.ts` è codice Node eseguito in fase di build:
+  la variabile viene letta lì, e il risultato finisce statico negli header.
+  Conseguenza pratica: **cambiando la variabile su Vercel bisogna rifare il
+  deploy**, altrimenti l'header resta quello di prima.
+
+  I domini sono quelli indicati dalla documentazione Google per GTM e GA4.
+  Un tag aggiunto dentro GTM che chiami un servizio diverso (una mappa, un
+  pixel pubblicitario) NON è coperto: va aggiunto qui, altrimenti non parte e
+  il motivo si vede solo nella console del browser.
+*/
+const gtmAttivo = Boolean(process.env.NEXT_PUBLIC_GTM_ID);
+
+const origini = {
+  script: ["'self'", "'unsafe-inline'"],
+  img: ["'self'", "data:", "https://filodirettorup.ideapubblica.it"],
+  connect: ["'self'"],
+  frame: ["'none'"],
+};
+
+if (gtmAttivo) {
+  origini.script.push("https://www.googletagmanager.com");
+  origini.img.push(
+    "https://www.googletagmanager.com",
+    "https://*.google-analytics.com",
+    "https://*.g.doubleclick.net",
+    "https://www.google.com",
+    "https://www.google.it",
+  );
+  origini.connect.push(
+    "https://www.googletagmanager.com",
+    "https://*.google-analytics.com",
+    "https://*.analytics.google.com",
+    "https://*.g.doubleclick.net",
+  );
+  // L'anteprima di GTM ("Preview mode") gira dentro un iframe servito da
+  // googletagmanager.com: senza questa voce non si riesce a collaudare i tag.
+  origini.frame = ["https://www.googletagmanager.com"];
+}
+
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  `script-src ${origini.script.join(" ")}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: https://filodirettorup.ideapubblica.it",
+  `img-src ${origini.img.join(" ")}`,
   "font-src 'self'",
-  "connect-src 'self'",
+  `connect-src ${origini.connect.join(" ")}`,
+  `frame-src ${origini.frame.join(" ")}`,
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",
